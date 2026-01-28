@@ -1,9 +1,9 @@
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { 
   FileText, TrendingUp, Users, DollarSign, Printer, Activity, Target, 
   RefreshCw, Lightbulb, CheckCircle2, Sparkles, Trophy, BarChart3, 
-  Layers, ArrowLeft, Wallet, PieChart
+  Layers, ArrowLeft, Wallet, PieChart, Download
 } from 'lucide-react';
 import { DashboardData } from './types';
 import { parseRawData } from './utils/parser';
@@ -43,7 +43,10 @@ const App: React.FC = () => {
   const [data, setData] = useState<DashboardData | null>(null);
   const [diagnosis, setDiagnosis] = useState<string>('');
   const [loadingAi, setLoadingAi] = useState<boolean>(false);
+  const [isDownloading, setIsDownloading] = useState<boolean>(false);
   const [view, setView] = useState<'dashboard' | 'report'>('dashboard');
+  
+  const reportRef = useRef<HTMLDivElement>(null);
 
   const handleProcess = () => {
     if (!rawText.trim() && !vgvText.trim()) return;
@@ -65,6 +68,25 @@ const App: React.FC = () => {
     const text = await getFunnelDiagnosis(data);
     setDiagnosis(text);
     setLoadingAi(false);
+  };
+
+  const handleDownloadPdf = () => {
+    if (!reportRef.current) return;
+    setIsDownloading(true);
+
+    const element = reportRef.current;
+    const opt = {
+      margin: 10,
+      filename: `Genesis_Report_${data?.reportDate.replace(/\//g, '-') || 'Export'}.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true, letterRendering: true },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    // @ts-ignore - html2pdf vem de script CDN no index.html
+    html2pdf().set(opt).from(element).save().then(() => {
+      setIsDownloading(false);
+    });
   };
 
   const handleReset = () => {
@@ -100,8 +122,13 @@ const App: React.FC = () => {
             <span className="font-black text-[10px] tracking-[0.3em] uppercase italic">GENESIS OPS PORTRAIT</span>
           </div>
           <div className="flex gap-4 mr-4">
-            <button onClick={() => window.print()} className="bg-blue-600 hover:bg-blue-500 text-white px-8 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest flex items-center gap-2 transition-all">
-              <Printer size={16} /> IMPRIMIR A4
+            <button 
+              onClick={handleDownloadPdf} 
+              disabled={isDownloading}
+              className="bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 text-white px-8 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest flex items-center gap-2 transition-all"
+            >
+              {isDownloading ? <RefreshCw className="animate-spin" size={16} /> : <Download size={16} />}
+              {isDownloading ? 'GERANDO...' : 'DOWNLOAD PDF'}
             </button>
             <button onClick={() => setView('dashboard')} className="bg-white/5 hover:bg-white/10 text-white px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest flex items-center gap-2 transition-all border border-white/10">
               <ArrowLeft size={16} /> VOLTAR
@@ -109,183 +136,186 @@ const App: React.FC = () => {
           </div>
         </div>
 
-        {/* Cabeçalho do Relatório - Adaptado Vertical */}
-        <div className="mt-12 mb-6 text-center page-break-avoid">
-          <h1 className="text-2xl font-black text-[#0f172a] uppercase tracking-tighter italic border-b-[4px] border-[#0f172a] pb-1 inline-block px-8 leading-tight">
-            RELATÓRIO CONSOLIDADO DE PERFORMANCE
-          </h1>
-          <p className="text-slate-400 font-bold text-[9px] mt-2 tracking-[0.5em] uppercase italic">{data.reportDate.split('').join(' ')}</p>
-        </div>
+        {/* Wrapper para captura do PDF */}
+        <div ref={reportRef} className="bg-white">
+          {/* Cabeçalho do Relatório */}
+          <div className="mt-12 mb-6 text-center page-break-avoid">
+            <h1 className="text-2xl font-black text-[#0f172a] uppercase tracking-tighter italic border-b-[4px] border-[#0f172a] pb-1 inline-block px-8 leading-tight">
+              RELATÓRIO CONSOLIDADO DE PERFORMANCE
+            </h1>
+            <p className="text-slate-400 font-bold text-[9px] mt-2 tracking-[0.5em] uppercase italic">{data.reportDate.split('').join(' ')}</p>
+          </div>
 
-        {/* Linha de KPIs Minimista - VGV Minimizado */}
-        <div className="grid grid-cols-3 gap-3 mb-6 page-break-avoid">
-          <div className="border-[2px] border-[#020617] rounded-2xl p-4 bg-white flex flex-col items-center justify-center">
-             <p className="text-[7px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">VGV GLOBAL</p>
-             <h2 className="text-xl font-black text-[#020617] italic tracking-tighter leading-none">R$ {formatCurrency(data.totals.vgv)}</h2>
+          {/* KPIs */}
+          <div className="grid grid-cols-3 gap-3 mb-6 page-break-avoid">
+            <div className="border-[2px] border-[#020617] rounded-2xl p-4 bg-white flex flex-col items-center justify-center">
+               <p className="text-[7px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">VGV GLOBAL</p>
+               <h2 className="text-xl font-black text-[#020617] italic tracking-tighter leading-none">R$ {formatCurrency(data.totals.vgv)}</h2>
+            </div>
+            <div className="border-[2px] border-slate-100 rounded-2xl p-4 bg-white flex flex-col items-center justify-center">
+               <p className="text-[7px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">TICKET OPERACIONAL</p>
+               <h2 className="text-xl font-black text-[#10b981] italic tracking-tighter leading-none">R$ {formatCurrency(data.ticketMedio)}</h2>
+            </div>
+            <div className="border-[2px] border-slate-100 rounded-2xl p-4 bg-white flex flex-col items-center justify-center">
+               <p className="text-[7px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">TICKET/VENDEDOR</p>
+               <h2 className="text-xl font-black text-[#2563eb] italic tracking-tighter leading-none">R$ {formatCurrency(data.ticketMedioPorConsultor)}</h2>
+            </div>
           </div>
-          <div className="border-[2px] border-slate-100 rounded-2xl p-4 bg-white flex flex-col items-center justify-center">
-             <p className="text-[7px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">TICKET OPERACIONAL</p>
-             <h2 className="text-xl font-black text-[#10b981] italic tracking-tighter leading-none">R$ {formatCurrency(data.ticketMedio)}</h2>
-          </div>
-          <div className="border-[2px] border-slate-100 rounded-2xl p-4 bg-white flex flex-col items-center justify-center">
-             <p className="text-[7px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">TICKET/VENDEDOR</p>
-             <h2 className="text-xl font-black text-[#2563eb] italic tracking-tighter leading-none">R$ {formatCurrency(data.ticketMedioPorConsultor)}</h2>
-          </div>
-        </div>
 
-        {/* SEÇÃO: MÉTRICAS DE VOLUME OPERACIONAL */}
-        <div className="mb-6 page-break-avoid">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="w-1.5 h-4 bg-[#020617]"></div>
-            <h3 className="text-[9px] font-black uppercase tracking-widest italic text-[#020617]">MÉTRICAS DE VOLUME OPERACIONAL</h3>
+          {/* MÉTRICAS DE VOLUME */}
+          <div className="mb-6 page-break-avoid">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-1.5 h-4 bg-[#020617]"></div>
+              <h3 className="text-[9px] font-black uppercase tracking-widest italic text-[#020617]">MÉTRICAS DE VOLUME OPERACIONAL</h3>
+            </div>
+            <div className="grid grid-cols-5 gap-2">
+              {[
+                { label: 'ANÚNCIOS', value: data.totals.ads },
+                { label: 'LIGAÇÕES', value: data.totals.calls },
+                { label: 'AGEND.', value: data.totals.appointments },
+                { label: 'VISITAS', value: data.totals.visits },
+                { label: 'FECH.', value: data.totals.closings }
+              ].map((item, idx) => (
+                <div key={idx} className="bg-white border-[1px] border-slate-100 rounded-xl p-3 flex flex-col items-center text-center">
+                  <span className="text-[6px] font-black text-slate-300 uppercase tracking-widest mb-1">{item.label}</span>
+                  <span className="text-lg font-black italic text-slate-800 tracking-tighter">{item.value}</span>
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="grid grid-cols-5 gap-2">
-            {[
-              { label: 'ANÚNCIOS', value: data.totals.ads },
-              { label: 'LIGAÇÕES', value: data.totals.calls },
-              { label: 'AGEND.', value: data.totals.appointments },
-              { label: 'VISITAS', value: data.totals.visits },
-              { label: 'FECH.', value: data.totals.closings }
-            ].map((item, idx) => (
-              <div key={idx} className="bg-white border-[1px] border-slate-100 rounded-xl p-3 flex flex-col items-center text-center">
-                <span className="text-[6px] font-black text-slate-300 uppercase tracking-widest mb-1">{item.label}</span>
-                <span className="text-lg font-black italic text-slate-800 tracking-tighter">{item.value}</span>
-              </div>
-            ))}
-          </div>
-        </div>
 
-        {/* SEÇÃO: EFICIÊNCIA DE CONVERSÃO DO FUNIL */}
-        <div className="mb-6 page-break-avoid">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="w-1.5 h-4 bg-[#2563eb]"></div>
-            <h3 className="text-[9px] font-black uppercase tracking-widest italic text-[#2563eb]">EFICIÊNCIA DE CONVERSÃO DO FUNIL</h3>
+          {/* EFICIÊNCIA DO FUNIL */}
+          <div className="mb-6 page-break-avoid">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-1.5 h-4 bg-[#2563eb]"></div>
+              <h3 className="text-[9px] font-black uppercase tracking-widest italic text-[#2563eb]">EFICIÊNCIA DE CONVERSÃO DO FUNIL</h3>
+            </div>
+            <div className="grid grid-cols-4 gap-2">
+              {[
+                { label: 'ANÚNCIOS/LEAD', value: data.efficiency.adsToCall },
+                { label: 'LIGAÇÃO/AGEND.', value: data.efficiency.callToAppointment },
+                { label: 'AGEND./VISITA', value: data.efficiency.appointmentToVisit },
+                { label: 'VISITA/FECH.', value: data.efficiency.visitToClosing }
+              ].map((item, idx) => (
+                <div key={idx} className="bg-slate-50/30 border-[1px] border-slate-100 rounded-xl p-3 flex flex-col items-center text-center">
+                  <span className="text-[6px] font-black text-slate-400 uppercase tracking-widest mb-1">{item.label}</span>
+                  <span className="text-lg font-black italic text-blue-600 tracking-tighter">{item.value.toFixed(1)}</span>
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="grid grid-cols-4 gap-2">
-            {[
-              { label: 'ANÚNCIOS/LEAD', value: data.efficiency.adsToCall },
-              { label: 'LIGAÇÃO/AGEND.', value: data.efficiency.callToAppointment },
-              { label: 'AGEND./VISITA', value: data.efficiency.appointmentToVisit },
-              { label: 'VISITA/FECH.', value: data.efficiency.visitToClosing }
-            ].map((item, idx) => (
-              <div key={idx} className="bg-slate-50/30 border-[1px] border-slate-100 rounded-xl p-3 flex flex-col items-center text-center">
-                <span className="text-[6px] font-black text-slate-400 uppercase tracking-widest mb-1">{item.label}</span>
-                <span className="text-lg font-black italic text-blue-600 tracking-tighter">{item.value.toFixed(1)}</span>
-              </div>
-            ))}
-          </div>
-        </div>
 
-        {/* Tabela: Performance por Unidade - Otimizada Vertical */}
-        <div className="mb-8 page-break-avoid">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="w-1.5 h-4 bg-[#020617]"></div>
-            <h3 className="text-[10px] font-black uppercase tracking-widest italic text-[#020617]">PERFORMANCE POR UNIDADE</h3>
-          </div>
-          <div className="overflow-hidden rounded-xl border-[2px] border-slate-900">
-            <table className="w-full text-[8px] border-collapse print:text-[7px]">
-              <thead>
-                <tr className="bg-[#020617] text-white text-left italic uppercase font-black">
-                  <th className="p-2 w-24">EQUIPE</th>
-                  <th className="p-1 text-center">ANN</th>
-                  <th className="p-1 text-center">LIG</th>
-                  <th className="p-1 text-center">AGD</th>
-                  <th className="p-1 text-center">VIS</th>
-                  <th className="p-1 text-center">FCH</th>
-                  <th className="p-1 text-right">VGV</th>
-                  <th className="p-1 text-center text-blue-300 border-l border-white/10">A/L</th>
-                  <th className="p-1 text-center text-blue-300">L/A</th>
-                  <th className="p-1 text-center text-blue-300">A/V</th>
-                  <th className="p-1 text-center text-[#10b981]">V/F</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 font-bold italic">
-                {data.teams.map((t, i) => (
-                  <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'}>
-                    <td className="p-2 text-[#020617] uppercase font-black truncate">{t.teamName}</td>
-                    <td className="p-1 text-center text-slate-400">{t.totals.ads}</td>
-                    <td className="p-1 text-center text-slate-400">{t.totals.calls}</td>
-                    <td className="p-1 text-center text-slate-400">{t.totals.appointments}</td>
-                    <td className="p-1 text-center text-slate-400">{t.totals.visits}</td>
-                    <td className="p-1 text-center text-blue-600 font-black">{t.totals.closings}</td>
-                    <td className="p-1 text-right text-[#10b981] font-black whitespace-nowrap">R$ {formatCurrency(t.totals.vgv)}</td>
-                    <td className="p-1 text-center text-blue-500 border-l border-slate-100">{t.efficiency.adsToCall.toFixed(1)}</td>
-                    <td className="p-1 text-center text-blue-500">{t.efficiency.callToAppointment.toFixed(1)}</td>
-                    <td className="p-1 text-center text-blue-500">{t.efficiency.appointmentToVisit.toFixed(1)}</td>
-                    <td className="p-1 text-center text-[#10b981] font-black bg-emerald-50/20">{t.efficiency.visitToClosing.toFixed(1)}</td>
+          {/* TABELA UNIDADE */}
+          <div className="mb-8 page-break-avoid">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-1.5 h-4 bg-[#020617]"></div>
+              <h3 className="text-[10px] font-black uppercase tracking-widest italic text-[#020617]">PERFORMANCE POR UNIDADE</h3>
+            </div>
+            <div className="overflow-hidden rounded-xl border-[2px] border-slate-900">
+              <table className="w-full text-[8px] border-collapse">
+                <thead>
+                  <tr className="bg-[#020617] text-white text-left italic uppercase font-black">
+                    <th className="p-2 w-24">EQUIPE</th>
+                    <th className="p-1 text-center">ANN</th>
+                    <th className="p-1 text-center">LIG</th>
+                    <th className="p-1 text-center">AGD</th>
+                    <th className="p-1 text-center">VIS</th>
+                    <th className="p-1 text-center">FCH</th>
+                    <th className="p-1 text-right">VGV</th>
+                    <th className="p-1 text-center text-blue-300 border-l border-white/10">A/L</th>
+                    <th className="p-1 text-center text-blue-300">L/A</th>
+                    <th className="p-1 text-center text-blue-300">A/V</th>
+                    <th className="p-1 text-center text-[#10b981]">V/F</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-slate-100 font-bold italic">
+                  {data.teams.map((t, i) => (
+                    <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'}>
+                      <td className="p-2 text-[#020617] uppercase font-black truncate">{t.teamName}</td>
+                      <td className="p-1 text-center text-slate-400">{t.totals.ads}</td>
+                      <td className="p-1 text-center text-slate-400">{t.totals.calls}</td>
+                      <td className="p-1 text-center text-slate-400">{t.totals.appointments}</td>
+                      <td className="p-1 text-center text-slate-400">{t.totals.visits}</td>
+                      <td className="p-1 text-center text-blue-600 font-black">{t.totals.closings}</td>
+                      <td className="p-1 text-right text-[#10b981] font-black whitespace-nowrap">R$ {formatCurrency(t.totals.vgv)}</td>
+                      <td className="p-1 text-center text-blue-500 border-l border-slate-100">{t.efficiency.adsToCall.toFixed(1)}</td>
+                      <td className="p-1 text-center text-blue-500">{t.efficiency.callToAppointment.toFixed(1)}</td>
+                      <td className="p-1 text-center text-blue-500">{t.efficiency.appointmentToVisit.toFixed(1)}</td>
+                      <td className="p-1 text-center text-[#10b981] font-black bg-emerald-50/20">{t.efficiency.visitToClosing.toFixed(1)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
 
-        {/* Tabela: Ranking Individual - Otimizada Vertical */}
-        <div className="mb-8">
-          <div className="flex items-center gap-2 mb-3 page-break-avoid">
-            <div className="w-1.5 h-4 bg-[#10b981]"></div>
-            <h3 className="text-[10px] font-black uppercase tracking-widest italic text-[#10b981]">RANKING INDIVIDUAL</h3>
-          </div>
-          <div className="overflow-hidden rounded-xl border-[2px] border-slate-900 shadow-sm">
-            <table className="w-full text-[7.5px] border-collapse print:text-[6.5px]">
-              <thead>
-                <tr className="bg-slate-900 text-white text-left italic uppercase font-black">
-                  <th className="p-2 w-32">VENDEDOR [EQUIPE]</th>
-                  <th className="p-1 text-center text-slate-400">ANN</th>
-                  <th className="p-1 text-center text-slate-400">LIG</th>
-                  <th className="p-1 text-center text-slate-400">AGD</th>
-                  <th className="p-1 text-center text-slate-400">VIS</th>
-                  <th className="p-1 text-center text-white">FCH</th>
-                  <th className="p-1 text-right text-[#10b981]">VGV TOTAL</th>
-                  <th className="p-1 text-center text-blue-300 border-l border-white/10">A/L</th>
-                  <th className="p-1 text-center text-blue-300">L/A</th>
-                  <th className="p-1 text-center text-blue-300">A/V</th>
-                  <th className="p-1 text-center text-[#10b981]">V/F</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 font-bold italic">
-                {data.consultants.sort((a,b) => b.vgv - a.vgv).map((c, i) => (
-                  <tr key={i} className="hover:bg-slate-50 transition-colors">
-                    <td className="p-2 text-[#020617] font-black truncate">
-                      {c.name} <span className="text-[5px] text-slate-400 ml-0.5 font-normal uppercase italic">[{c.team}]</span>
-                    </td>
-                    <td className="p-1 text-center text-slate-300">{c.ads}</td>
-                    <td className="p-1 text-center text-slate-300">{c.calls}</td>
-                    <td className="p-1 text-center text-slate-300">{c.appointments}</td>
-                    <td className="p-1 text-center text-slate-300">{c.visits}</td>
-                    <td className="p-1 text-center text-slate-900 font-black">{c.closings}</td>
-                    <td className="p-1 text-right text-[#10b981] font-black bg-emerald-50/10">R$ {formatCurrency(c.vgv)}</td>
-                    <td className="p-1 text-center text-blue-500 border-l border-slate-100">{c.adsToCall.toFixed(1)}</td>
-                    <td className="p-1 text-center text-blue-500">{c.callToAppointment.toFixed(1)}</td>
-                    <td className="p-1 text-center text-blue-500">{c.appointmentToVisit.toFixed(1)}</td>
-                    <td className="p-1 text-center text-[#10b981] font-black bg-emerald-50/20">{c.visitToClosing.toFixed(1)}</td>
+          {/* RANKING INDIVIDUAL */}
+          <div className="mb-8">
+            <div className="flex items-center gap-2 mb-3 page-break-avoid">
+              <div className="w-1.5 h-4 bg-[#10b981]"></div>
+              <h3 className="text-[10px] font-black uppercase tracking-widest italic text-[#10b981]">RANKING INDIVIDUAL</h3>
+            </div>
+            <div className="overflow-hidden rounded-xl border-[2px] border-slate-900 shadow-sm">
+              <table className="w-full text-[7.5px] border-collapse">
+                <thead>
+                  <tr className="bg-slate-900 text-white text-left italic uppercase font-black">
+                    <th className="p-2 w-32">VENDEDOR [EQUIPE]</th>
+                    <th className="p-1 text-center text-slate-400">ANN</th>
+                    <th className="p-1 text-center text-slate-400">LIG</th>
+                    <th className="p-1 text-center text-slate-400">AGD</th>
+                    <th className="p-1 text-center text-slate-400">VIS</th>
+                    <th className="p-1 text-center text-white">FCH</th>
+                    <th className="p-1 text-right text-[#10b981]">VGV TOTAL</th>
+                    <th className="p-1 text-center text-blue-300 border-l border-white/10">A/L</th>
+                    <th className="p-1 text-center text-blue-300">L/A</th>
+                    <th className="p-1 text-center text-blue-300">A/V</th>
+                    <th className="p-1 text-center text-[#10b981]">V/F</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-slate-100 font-bold italic">
+                  {data.consultants.sort((a,b) => b.vgv - a.vgv).map((c, i) => (
+                    <tr key={i} className="hover:bg-slate-50 transition-colors">
+                      <td className="p-2 text-[#020617] font-black truncate">
+                        {c.name} <span className="text-[5px] text-slate-400 ml-0.5 font-normal uppercase italic">[{c.team}]</span>
+                      </td>
+                      <td className="p-1 text-center text-slate-300">{c.ads}</td>
+                      <td className="p-1 text-center text-slate-300">{c.calls}</td>
+                      <td className="p-1 text-center text-slate-300">{c.appointments}</td>
+                      <td className="p-1 text-center text-slate-300">{c.visits}</td>
+                      <td className="p-1 text-center text-slate-900 font-black">{c.closings}</td>
+                      <td className="p-1 text-right text-[#10b981] font-black bg-emerald-50/10">R$ {formatCurrency(c.vgv)}</td>
+                      <td className="p-1 text-center text-blue-500 border-l border-slate-100">{c.adsToCall.toFixed(1)}</td>
+                      <td className="p-1 text-center text-blue-500">{c.callToAppointment.toFixed(1)}</td>
+                      <td className="p-1 text-center text-blue-500">{c.appointmentToVisit.toFixed(1)}</td>
+                      <td className="p-1 text-center text-[#10b981] font-black bg-emerald-50/20">{c.visitToClosing.toFixed(1)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
+
+          {/* Diagnóstico IA */}
+          {diagnosis && (
+            <div className="bg-[#020617] rounded-2xl p-6 text-white mb-8 page-break-avoid border-l-[8px] border-blue-600 relative overflow-hidden">
+               <div className="flex items-center gap-2 mb-3">
+                 <Sparkles className="text-blue-400" size={16} />
+                 <h4 className="text-[9px] font-black uppercase tracking-widest italic">ANÁLISE ESTRATÉGICA (AI)</h4>
+               </div>
+               <div className="text-[8.5px] leading-relaxed font-semibold italic opacity-90 space-y-2 max-w-6xl relative z-10">
+                 {diagnosis.split('\n\n').map((para, i) => (
+                   <p key={i}>{para}</p>
+                 ))}
+               </div>
+            </div>
+          )}
+
+          <footer className="mt-4 pt-4 text-center border-t border-slate-100 opacity-30">
+            <p className="text-[6px] font-black text-slate-400 uppercase tracking-[0.8em] italic leading-none">
+              GENESIS INTELLIGENCE CORE • SALES OPS PORTRAIT PROTOCOL • {data.reportDate}
+            </p>
+          </footer>
         </div>
-
-        {/* Diagnóstico IA - Compactado */}
-        {diagnosis && (
-          <div className="bg-[#020617] rounded-2xl p-6 text-white mb-8 page-break-avoid border-l-[8px] border-blue-600 relative overflow-hidden">
-             <div className="flex items-center gap-2 mb-3">
-               <Sparkles className="text-blue-400" size={16} />
-               <h4 className="text-[9px] font-black uppercase tracking-widest italic">ANÁLISE ESTRATÉGICA (AI)</h4>
-             </div>
-             <div className="text-[8.5px] leading-relaxed font-semibold italic opacity-90 space-y-2 max-w-6xl relative z-10">
-               {diagnosis.split('\n\n').map((para, i) => (
-                 <p key={i}>{para}</p>
-               ))}
-             </div>
-          </div>
-        )}
-
-        <footer className="mt-4 pt-4 text-center border-t border-slate-100 opacity-30">
-          <p className="text-[6px] font-black text-slate-400 uppercase tracking-[0.8em] italic leading-none">
-            GENESIS INTELLIGENCE CORE • SALES OPS PORTRAIT PROTOCOL • {data.reportDate}
-          </p>
-        </footer>
       </div>
     );
   };
@@ -364,7 +394,7 @@ const App: React.FC = () => {
                       DIAGNÓSTICO IA
                     </button>
                     <button onClick={() => setView('report')} className="bg-blue-600 hover:bg-blue-700 text-white px-10 py-5 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-2xl shadow-blue-200 transition-all flex items-center gap-3 active:scale-95">
-                      <Printer size={20} /> GERAR RELATÓRIO
+                      <Printer size={20} /> VISUALIZAR RELATÓRIO
                     </button>
                   </div>
                 </div>
