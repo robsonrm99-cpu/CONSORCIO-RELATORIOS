@@ -7,9 +7,9 @@
     <title>Genesis Hub | Sales Ops</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>">
     
-    <!-- Resolve o aviso de produção do Tailwind em ambientes de deploy como Vercel -->
     <script>
-      window.process = { env: { NODE_ENV: 'development' } };
+      // Fix para evitar erro de deploy/aviso de produção do Tailwind CDN
+      window.process = { env: { NODE_ENV: 'production' } };
     </script>
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -51,7 +51,7 @@
       }
 
       @media print {
-        @page { size: A4 portrait; margin: 10mm; }
+        @page { size: A4 portrait; margin: 8mm; }
         body { background: white !important; padding: 0 !important; }
         .no-print { display: none !important; }
         .printable-content {
@@ -68,9 +68,6 @@
       ::-webkit-scrollbar-track { background: #f1f5f9; }
       ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
       ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-
-      .tracking-widest-plus { letter-spacing: 0.5em; }
-      .font-black-italic { font-weight: 900; font-style: italic; }
     </style>
   <script type="importmap">
 {

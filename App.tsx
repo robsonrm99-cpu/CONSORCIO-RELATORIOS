@@ -91,12 +91,8 @@ const App: React.FC = () => {
   );
 
   const ReportView = ({ data }: { data: DashboardData }) => {
-    const handlePrint = () => {
-      window.print();
-    };
-
     return (
-      <div className="bg-white min-h-screen p-10 printable-content max-w-[210mm] mx-auto shadow-none">
+      <div className="bg-white min-h-screen p-8 printable-content max-w-[210mm] mx-auto shadow-none">
         {/* Navbar para Controle */}
         <div className="no-print fixed top-0 left-0 right-0 bg-[#020617] text-white p-4 flex justify-between items-center z-[100] shadow-2xl">
           <div className="flex items-center gap-3 ml-4">
@@ -105,7 +101,7 @@ const App: React.FC = () => {
           </div>
           <div className="flex gap-4 mr-4">
             <button 
-              onClick={handlePrint} 
+              onClick={() => window.print()} 
               className="bg-blue-600 hover:bg-blue-500 text-white px-8 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest flex items-center gap-2 transition-all shadow-xl shadow-blue-900/20 active:scale-95"
             >
               <Printer size={16} /> IMPRIMIR PDF
@@ -119,31 +115,31 @@ const App: React.FC = () => {
           </div>
         </div>
 
-        {/* Header Visual Principal - Reduzido e Refinado */}
+        {/* Header Visual Principal */}
         <div className="mt-12 mb-8 text-center">
-          <h1 className="text-2xl font-black text-[#0f172a] uppercase tracking-tight italic border-b-2 border-[#0f172a] pb-1 inline-block px-8 leading-tight">
+          <h1 className="text-3xl font-black text-[#0f172a] uppercase tracking-tight italic border-b-2 border-[#0f172a] pb-1 inline-block px-8 leading-tight">
             RELATÓRIO CONSOLIDADO DE PERFORMANCE
           </h1>
-          <p className="text-slate-400 font-bold text-sm mt-2 tracking-widest uppercase">{data.reportDate.split('').join(' ')}</p>
+          <p className="text-slate-400 font-bold text-sm mt-2 tracking-[0.3em] uppercase italic">{data.reportDate.split('').join(' ')}</p>
         </div>
 
-        {/* Card de Faturamento Global - Menos destacado e mais elegante */}
-        <div className="border border-slate-900 rounded-[1.5rem] p-6 mb-10 flex flex-col items-center max-w-2xl mx-auto bg-white shadow-sm">
-          <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em] mb-2 text-center">FATURAMENTO CONSOLIDADO GLOBAL</p>
-          <h2 className="text-4xl font-black text-[#020617] italic mb-6 tracking-tight leading-none">
+        {/* Card de Faturamento Global */}
+        <div className="border-[2px] border-[#020617] rounded-[2rem] p-8 mb-10 flex flex-col items-center shadow-md max-w-2xl mx-auto bg-white">
+          <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-3 text-center opacity-80 italic">FATURAMENTO CONSOLIDADO GLOBAL</p>
+          <h2 className="text-5xl font-black text-[#020617] italic mb-8 tracking-tighter leading-none">
             R$ {formatCurrency(data.totals.vgv)}
           </h2>
           
-          <div className="w-full max-w-md h-px bg-slate-100 mb-6"></div>
+          <div className="w-full max-w-lg h-px bg-slate-100 mb-8"></div>
           
-          <div className="grid grid-cols-2 gap-8 w-full max-w-lg">
+          <div className="grid grid-cols-2 gap-12 w-full max-w-xl">
             <div className="text-center">
-              <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">TICKET OPERACIONAL</p>
-              <p className="text-xl font-black text-[#10b981] italic tracking-tight">R$ {formatCurrency(data.ticketMedio)}</p>
+              <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1.5 italic">TICKET OPERACIONAL</p>
+              <p className="text-2xl font-black text-[#10b981] italic tracking-tighter leading-none">R$ {formatCurrency(data.ticketMedio)}</p>
             </div>
             <div className="text-center">
-              <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">TICKET POR VENDEDOR</p>
-              <p className="text-xl font-black text-[#2563eb] italic tracking-tight">R$ {formatCurrency(data.ticketMedioPorConsultor)}</p>
+              <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1.5 italic">TICKET POR VENDEDOR</p>
+              <p className="text-2xl font-black text-[#2563eb] italic tracking-tighter leading-none">R$ {formatCurrency(data.ticketMedioPorConsultor)}</p>
             </div>
           </div>
         </div>
@@ -152,19 +148,19 @@ const App: React.FC = () => {
         <div className="mb-10">
           <div className="flex items-center gap-2 mb-4">
             <div className="w-1.5 h-4 bg-[#020617]"></div>
-            <h3 className="text-[10px] font-black uppercase tracking-[0.2em] italic text-[#020617]">Volume Operacional</h3>
+            <h3 className="text-[10px] font-black uppercase tracking-[0.2em] italic text-[#020617]">MÉTRICAS DE VOLUME OPERACIONAL</h3>
           </div>
           <div className="grid grid-cols-5 gap-3">
             {[
               { label: 'ANÚNCIOS', value: data.totals.ads },
               { label: 'LIGAÇÕES', value: data.totals.calls },
-              { label: 'AGEND.', value: data.totals.appointments },
+              { label: 'AGENDAMENTOS', value: data.totals.appointments },
               { label: 'VISITAS', value: data.totals.visits },
-              { label: 'FECH.', value: data.totals.closings }
+              { label: 'FECHAMENTOS', value: data.totals.closings }
             ].map((m, i) => (
-              <div key={i} className="border border-slate-100 rounded-[1rem] p-4 text-center bg-slate-50/30">
-                <p className="text-[7px] font-black text-slate-400 uppercase mb-2 tracking-widest leading-none">{m.label}</p>
-                <p className="text-xl font-black text-[#0f172a] italic leading-none">{m.value}</p>
+              <div key={i} className="border border-slate-100 rounded-[1.2rem] p-4 text-center bg-slate-50/20 shadow-sm">
+                <p className="text-[7px] font-black text-slate-400 uppercase mb-2 tracking-widest leading-none italic">{m.label}</p>
+                <p className="text-2xl font-black text-[#0f172a] italic leading-none tracking-tight">{m.value}</p>
               </div>
             ))}
           </div>
@@ -174,18 +170,18 @@ const App: React.FC = () => {
         <div className="mb-10">
           <div className="flex items-center gap-2 mb-4">
             <div className="w-1.5 h-4 bg-[#2563eb]"></div>
-            <h3 className="text-[10px] font-black uppercase tracking-[0.2em] italic text-[#2563eb]">Eficiência de Conversão</h3>
+            <h3 className="text-[10px] font-black uppercase tracking-[0.2em] italic text-[#2563eb]">EFICIÊNCIA DE CONVERSÃO DO FUNIL</h3>
           </div>
           <div className="grid grid-cols-4 gap-3">
             {[
-              { label: 'ANN/LIG', value: data.efficiency.adsToCall },
-              { label: 'LIG/AGD', value: data.efficiency.callToAppointment },
-              { label: 'AGD/VIS', value: data.efficiency.appointmentToVisit },
-              { label: 'VIS/FECH', value: data.efficiency.visitToClosing }
+              { label: 'ANÚNCIOS/LEAD', value: data.efficiency.adsToCall },
+              { label: 'LIGAÇÃO/AGEND.', value: data.efficiency.callToAppointment },
+              { label: 'AGEND./VISITA', value: data.efficiency.appointmentToVisit },
+              { label: 'VISITA/FECH.', value: data.efficiency.visitToClosing }
             ].map((m, i) => (
-              <div key={i} className="bg-slate-50 border border-slate-100 rounded-[1rem] p-4 text-center">
-                <p className="text-[7px] font-black text-slate-400 uppercase mb-2 tracking-widest leading-none">{m.label}</p>
-                <p className="text-2xl font-black text-[#2563eb] italic leading-none">{m.value.toFixed(1)}</p>
+              <div key={i} className="bg-slate-50 border border-slate-100 rounded-[1.2rem] p-5 text-center shadow-sm">
+                <p className="text-[7px] font-black text-slate-400 uppercase mb-2 tracking-widest leading-none italic">{m.label}</p>
+                <p className="text-3xl font-black text-[#2563eb] italic leading-none tracking-tight">{m.value.toFixed(1)}</p>
               </div>
             ))}
           </div>
@@ -195,20 +191,23 @@ const App: React.FC = () => {
         <div className="mb-10 page-break-inside-avoid">
           <div className="flex items-center gap-2 mb-4">
             <div className="w-1.5 h-4 bg-[#2563eb]"></div>
-            <h3 className="text-[10px] font-black uppercase tracking-[0.2em] italic text-[#2563eb]">Performance por Unidade</h3>
+            <h3 className="text-[10px] font-black uppercase tracking-[0.2em] italic text-[#2563eb]">PERFORMANCE E EFICIÊNCIA POR UNIDADE</h3>
           </div>
-          <div className="overflow-hidden rounded-[0.75rem] border border-slate-200">
+          <div className="overflow-hidden rounded-[1rem] border border-slate-200">
             <table className="w-full text-[9px] border-collapse">
               <thead>
                 <tr className="bg-[#020617] text-white text-left italic uppercase font-black">
-                  <th className="p-3 tracking-wider">Equipe</th>
+                  <th className="p-3 tracking-widest">Equipe</th>
                   <th className="p-3 text-center">ANN</th>
                   <th className="p-3 text-center">LIG</th>
                   <th className="p-3 text-center">AGD</th>
                   <th className="p-3 text-center">VIS</th>
                   <th className="p-3 text-center">FCH</th>
-                  <th className="p-3 text-right">VGV Total</th>
-                  <th className="p-3 text-center text-blue-300">V/F</th>
+                  <th className="p-3 text-right">VGV TOTAL</th>
+                  <th className="p-2 text-center text-blue-300">A/L</th>
+                  <th className="p-2 text-center text-blue-300">L/A</th>
+                  <th className="p-2 text-center text-blue-300">A/V</th>
+                  <th className="p-2 text-center text-blue-300">V/F</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 font-bold italic">
@@ -220,8 +219,57 @@ const App: React.FC = () => {
                     <td className="p-3 text-center text-slate-400">{t.totals.appointments}</td>
                     <td className="p-3 text-center text-slate-400">{t.totals.visits}</td>
                     <td className="p-3 text-center text-[#020617]">{t.totals.closings}</td>
-                    <td className="p-3 text-right text-[#10b981] font-black">R$ {formatCurrency(t.totals.vgv)}</td>
-                    <td className="p-3 text-center text-[#2563eb]">{t.efficiency.visitToClosing.toFixed(1)}</td>
+                    <td className="p-3 text-right text-[#10b981] font-black whitespace-nowrap">R$ {formatCurrency(t.totals.vgv)}</td>
+                    <td className="p-2 text-center text-blue-600">{t.efficiency.adsToCall.toFixed(1)}</td>
+                    <td className="p-2 text-center text-blue-600">{t.efficiency.callToAppointment.toFixed(1)}</td>
+                    <td className="p-2 text-center text-blue-600">{t.efficiency.appointmentToVisit.toFixed(1)}</td>
+                    <td className="p-2 text-center text-blue-600">{t.efficiency.visitToClosing.toFixed(1)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Tabela: Ranking Individual */}
+        <div className="mb-10">
+          <div className="flex items-center gap-2 mb-4">
+            <div className="w-1.5 h-4 bg-[#10b981]"></div>
+            <h3 className="text-[10px] font-black uppercase tracking-[0.2em] italic text-[#10b981]">RANKING INDIVIDUAL DE PERFORMANCE</h3>
+          </div>
+          <div className="overflow-hidden rounded-[1rem] border border-slate-200 shadow-sm">
+            <table className="w-full text-[8px] border-collapse">
+              <thead>
+                <tr className="bg-slate-50 text-slate-400 text-left italic uppercase font-black border-b border-slate-200">
+                  <th className="p-3 tracking-widest text-[#0f172a]">Vendedor [Equipe]</th>
+                  <th className="p-2 text-center">ANN</th>
+                  <th className="p-2 text-center">LIG</th>
+                  <th className="p-2 text-center">AGD</th>
+                  <th className="p-2 text-center">VIS</th>
+                  <th className="p-2 text-center text-slate-900">FCH</th>
+                  <th className="p-2 text-right text-slate-900">VGV TOTAL</th>
+                  <th className="p-2 text-center text-blue-600">A/L</th>
+                  <th className="p-2 text-center text-blue-600">L/A</th>
+                  <th className="p-2 text-center text-blue-600">A/V</th>
+                  <th className="p-2 text-center text-blue-600">V/F</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100 font-bold italic">
+                {data.consultants.sort((a,b) => b.closings - a.closings || b.vgv - a.vgv).map((c, i) => (
+                  <tr key={i} className="hover:bg-slate-50/50 transition-colors">
+                    <td className="p-3 text-[#0f172a] font-black">
+                      {c.name} <span className="text-[6px] text-slate-300 ml-1 font-normal italic">[{c.team}]</span>
+                    </td>
+                    <td className="p-2 text-center text-slate-300">{c.ads}</td>
+                    <td className="p-2 text-center text-slate-300">{c.calls}</td>
+                    <td className="p-2 text-center text-slate-300">{c.appointments}</td>
+                    <td className="p-2 text-center text-slate-300">{c.visits}</td>
+                    <td className="p-2 text-center text-[#0f172a] font-black">{c.closings}</td>
+                    <td className="p-2 text-right text-[#10b981] font-black bg-[#10b981]/5 whitespace-nowrap">R$ {formatCurrency(c.vgv)}</td>
+                    <td className="p-2 text-center text-[#2563eb]">{c.adsToCall.toFixed(1)}</td>
+                    <td className="p-2 text-center text-[#2563eb]">{c.callToAppointment.toFixed(1)}</td>
+                    <td className="p-2 text-center text-[#2563eb]">{c.appointmentToVisit.toFixed(1)}</td>
+                    <td className="p-2 text-center text-[#2563eb]">{c.visitToClosing.toFixed(1)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -231,9 +279,12 @@ const App: React.FC = () => {
 
         {diagnosis && (
           <div className="bg-[#020617] rounded-[1rem] p-6 text-white mb-10 page-break-inside-avoid relative overflow-hidden shadow-lg border-l-4 border-blue-500">
+            <div className="absolute top-[-20px] right-[-20px] opacity-5">
+              <Sparkles size={100} />
+            </div>
             <div className="flex items-center gap-2 mb-3 text-blue-400">
               <Sparkles size={16} />
-              <h4 className="text-[9px] font-black uppercase tracking-widest italic leading-none">Insight Estratégico AI</h4>
+              <h4 className="text-[9px] font-black uppercase tracking-widest italic leading-none">INTELIGÊNCIA ESTRATÉGICA AI</h4>
             </div>
             <div className="text-[10px] leading-relaxed font-semibold italic opacity-90 space-y-2 max-w-4xl">
               {diagnosis.split('\n\n').map((para, i) => (
@@ -244,8 +295,8 @@ const App: React.FC = () => {
         )}
 
         <footer className="mt-12 pt-6 text-center border-t border-slate-100 opacity-50">
-          <p className="text-[7px] font-black text-slate-400 uppercase tracking-[0.8em] italic">
-            GENESIS INTELLIGENT CORE • {data.reportDate}
+          <p className="text-[7px] font-black text-slate-400 uppercase tracking-[0.8em] italic leading-none">
+            GENESIS INTELLIGENT CORE • OPERATIONAL SCALING PROTOCOL • {data.reportDate}
           </p>
         </footer>
       </div>
