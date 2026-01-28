@@ -4,53 +4,66 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Genesis Hub</title>
+    <title>Genesis Hub | Sales Ops</title>
+    <!-- Favicon inline para evitar erro 404 no deploy -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+            },
+            colors: {
+              brand: {
+                dark: '#020617',
+                accent: '#2563eb',
+                success: '#10b981',
+                surface: '#f8fafc',
+              }
+            }
+          }
+        }
+      }
+    </script>
     <style>
       @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
       
       body {
         font-family: 'Inter', sans-serif;
         background-color: #f8fafc;
-        color: #1e293b;
+        color: #0f172a;
         -webkit-font-smoothing: antialiased;
       }
 
       .glass-card {
-        background: white;
-        border-radius: 2rem;
-        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
-        border: 1px solid #f1f5f9;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(12px);
+        border-radius: 1.5rem;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
       }
 
       @media print {
-        @page { 
-          size: A4 portrait; 
-          margin: 0; 
-        }
-        body { 
-          background: white !important; 
-          padding: 0 !important;
-          margin: 0 !important;
-        }
+        @page { size: A4 portrait; margin: 10mm; }
+        body { background: white !important; padding: 0 !important; }
         .no-print { display: none !important; }
         .printable-content {
-          width: 210mm !important;
-          min-height: 297mm !important;
-          padding: 15mm !important;
-          margin: 0 auto !important;
+          width: 100% !important;
+          margin: 0 !important;
+          padding: 0 !important;
           box-shadow: none !important;
           border: none !important;
         }
-        * {
-          -webkit-print-color-adjust: exact !important;
-          print-color-adjust: exact !important;
-          color-adjust: exact !important;
-        }
-        table { page-break-inside: auto; }
-        tr { page-break-inside: avoid; page-break-after: auto; }
-        thead { display: table-header-group; }
+        * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
       }
+
+      /* Custom scrollbar for better UX */
+      ::-webkit-scrollbar { width: 6px; }
+      ::-webkit-scrollbar-track { background: #f1f5f9; }
+      ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+      ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
   <script type="importmap">
 {

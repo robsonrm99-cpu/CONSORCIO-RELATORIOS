@@ -3,7 +3,7 @@ import { GoogleGenAI } from "@google/genai";
 import { DashboardData } from "../types";
 
 export const getFunnelDiagnosis = async (data: DashboardData): Promise<string> => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   
   const prompt = `
     Aja como um Estrategista Sênior de Sales Ops especializado em consórcio. 
