@@ -92,211 +92,161 @@ const App: React.FC = () => {
 
   const ReportView = ({ data }: { data: DashboardData }) => {
     return (
-      <div className="bg-white min-h-screen p-8 printable-content max-w-[210mm] mx-auto shadow-none">
+      <div className="bg-white min-h-screen p-6 printable-content max-w-[297mm] mx-auto shadow-none">
         {/* Navbar para Controle */}
         <div className="no-print fixed top-0 left-0 right-0 bg-[#020617] text-white p-4 flex justify-between items-center z-[100] shadow-2xl">
           <div className="flex items-center gap-3 ml-4">
             <Activity size={20} className="text-blue-500" />
-            <span className="font-black text-[10px] tracking-[0.3em] uppercase italic">GERENCIAMENTO DE PERFORMANCE</span>
+            <span className="font-black text-[10px] tracking-[0.3em] uppercase italic">SALES OPS CONSORTIUM HUB</span>
           </div>
           <div className="flex gap-4 mr-4">
-            <button 
-              onClick={() => window.print()} 
-              className="bg-blue-600 hover:bg-blue-500 text-white px-8 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest flex items-center gap-2 transition-all shadow-xl shadow-blue-900/20 active:scale-95"
-            >
-              <Printer size={16} /> IMPRIMIR PDF
+            <button onClick={() => window.print()} className="bg-blue-600 hover:bg-blue-500 text-white px-8 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest flex items-center gap-2 transition-all">
+              <Printer size={16} /> GERAR PDF
             </button>
-            <button 
-              onClick={() => setView('dashboard')} 
-              className="bg-white/5 hover:bg-white/10 text-white px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest flex items-center gap-2 transition-all border border-white/10 active:scale-95"
-            >
-              <ArrowLeft size={16} /> VOLTAR AO SISTEMA
+            <button onClick={() => setView('dashboard')} className="bg-white/5 hover:bg-white/10 text-white px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest flex items-center gap-2 transition-all border border-white/10">
+              <ArrowLeft size={16} /> PAINEL
             </button>
           </div>
         </div>
 
-        {/* Header Visual Principal - Mais Sóbrio */}
-        <div className="mt-12 mb-8 text-center">
-          <h1 className="text-3xl font-black text-[#0f172a] uppercase tracking-tight italic border-b-[4px] border-[#0f172a] pb-2 inline-block px-10 leading-tight">
-            RELATÓRIO CONSOLIDADO DE PERFORMANCE
+        {/* Header Visual Principal */}
+        <div className="mt-16 mb-8 text-center">
+          <h1 className="text-4xl font-black text-[#0f172a] uppercase tracking-tight italic border-b-[6px] border-[#0f172a] pb-2 inline-block px-12 leading-tight">
+            RELATÓRIO DE PERFORMANCE ESTRATÉGICA
           </h1>
-          <p className="text-slate-400 font-bold text-sm mt-3 tracking-[0.4em] uppercase italic">{data.reportDate.split('').join(' ')}</p>
+          <p className="text-slate-400 font-bold text-xs mt-4 tracking-[0.5em] uppercase italic">{data.reportDate.split('').join(' ')}</p>
         </div>
 
-        {/* Card de Faturamento Global - Executivo Style */}
-        <div className="border-[4px] border-[#020617] rounded-[2.5rem] p-10 mb-12 flex flex-col items-center shadow-lg max-w-3xl mx-auto bg-white">
-          <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.5em] mb-4 text-center opacity-70 italic">FATURAMENTO CONSOLIDADO GLOBAL</p>
-          <h2 className="text-6xl font-black text-[#020617] italic mb-10 tracking-tighter leading-none">
-            R$ {formatCurrency(data.totals.vgv)}
-          </h2>
-          
-          <div className="w-full h-px bg-slate-100 mb-10"></div>
-          
-          <div className="grid grid-cols-2 gap-16 w-full">
-            <div className="text-center">
-              <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em] mb-2 italic">TICKET OPERACIONAL</p>
-              <p className="text-3xl font-black text-[#10b981] italic tracking-tighter leading-none">R$ {formatCurrency(data.ticketMedio)}</p>
+        {/* KPIs Globais no Report */}
+        <div className="grid grid-cols-3 gap-6 mb-10">
+          <div className="border-[4px] border-[#020617] rounded-[2rem] p-8 bg-white flex flex-col items-center">
+             <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.4em] mb-2 italic text-center">VGV GLOBAL CONSOLIDADO</p>
+             <h2 className="text-4xl font-black text-[#020617] italic tracking-tighter">R$ {formatCurrency(data.totals.vgv)}</h2>
+          </div>
+          <div className="border-[4px] border-slate-200 rounded-[2rem] p-8 bg-white flex flex-col items-center">
+             <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.4em] mb-2 italic text-center">TICKET OPERACIONAL</p>
+             <h2 className="text-4xl font-black text-[#10b981] italic tracking-tighter">R$ {formatCurrency(data.ticketMedio)}</h2>
+          </div>
+          <div className="border-[4px] border-slate-200 rounded-[2rem] p-8 bg-white flex flex-col items-center">
+             <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.4em] mb-2 italic text-center">EFICIÊNCIA GLOBAL V/F</p>
+             <h2 className="text-4xl font-black text-[#2563eb] italic tracking-tighter">{data.efficiency.visitToClosing.toFixed(1)}</h2>
+          </div>
+        </div>
+
+        {/* Tabelas de Métricas Completas */}
+        <div className="space-y-12">
+          {/* Tabela de Unidades */}
+          <section className="page-break-inside-avoid">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-2 h-6 bg-[#2563eb]"></div>
+              <h3 className="text-sm font-black uppercase tracking-[0.2em] italic text-[#0f172a]">EFICIÊNCIA POR UNIDADE ESTRATÉGICA</h3>
             </div>
-            <div className="text-center">
-              <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em] mb-2 italic">TICKET POR VENDEDOR</p>
-              <p className="text-3xl font-black text-[#2563eb] italic tracking-tighter leading-none">R$ {formatCurrency(data.ticketMedioPorConsultor)}</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Seção: Métricas de Volume */}
-        <div className="mb-12">
-          <div className="flex items-center gap-3 mb-5">
-            <div className="w-2 h-6 bg-[#020617]"></div>
-            <h3 className="text-[12px] font-black uppercase tracking-[0.3em] italic text-[#020617]">MÉTRICAS DE VOLUME OPERACIONAL</h3>
-          </div>
-          <div className="grid grid-cols-5 gap-4">
-            {[
-              { label: 'ANÚNCIOS', value: data.totals.ads },
-              { label: 'LIGAÇÕES', value: data.totals.calls },
-              { label: 'AGENDAMENTOS', value: data.totals.appointments },
-              { label: 'VISITAS', value: data.totals.visits },
-              { label: 'FECHAMENTOS', value: data.totals.closings }
-            ].map((m, i) => (
-              <div key={i} className="border-[3px] border-slate-100 rounded-[1.5rem] p-5 text-center bg-white shadow-sm">
-                <p className="text-[8px] font-black text-slate-400 uppercase mb-3 tracking-widest leading-none italic">{m.label}</p>
-                <p className="text-3xl font-black text-[#0f172a] italic leading-none tracking-tight">{m.value}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Seção: Eficiência de Funil */}
-        <div className="mb-12">
-          <div className="flex items-center gap-3 mb-5">
-            <div className="w-2 h-6 bg-[#2563eb]"></div>
-            <h3 className="text-[12px] font-black uppercase tracking-[0.3em] italic text-[#2563eb]">EFICIÊNCIA DE CONVERSÃO DO FUNIL</h3>
-          </div>
-          <div className="grid grid-cols-4 gap-4">
-            {[
-              { label: 'ANÚNCIOS/LEAD', value: data.efficiency.adsToCall },
-              { label: 'LIGAÇÃO/AGEND.', value: data.efficiency.callToAppointment },
-              { label: 'AGEND./VISITA', value: data.efficiency.appointmentToVisit },
-              { label: 'VISITA/FECH.', value: data.efficiency.visitToClosing }
-            ].map((m, i) => (
-              <div key={i} className="bg-slate-50 border-[2px] border-slate-100 rounded-[1.5rem] p-6 text-center shadow-inner">
-                <p className="text-[8px] font-black text-slate-400 uppercase mb-3 tracking-widest leading-none italic">{m.label}</p>
-                <p className="text-4xl font-black text-[#2563eb] italic leading-none tracking-tight">{m.value.toFixed(1)}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Tabela: Performance por Unidade */}
-        <div className="mb-12 page-break-inside-avoid">
-          <div className="flex items-center gap-3 mb-5">
-            <div className="w-2 h-6 bg-[#2563eb]"></div>
-            <h3 className="text-[12px] font-black uppercase tracking-[0.3em] italic text-[#2563eb]">PERFORMANCE E EFICIÊNCIA POR UNIDADE</h3>
-          </div>
-          <div className="overflow-hidden rounded-[1.5rem] border-[3px] border-slate-900">
-            <table className="w-full text-[10px] border-collapse">
-              <thead>
-                <tr className="bg-[#020617] text-white text-left italic uppercase font-black">
-                  <th className="p-4 tracking-widest">Equipe</th>
-                  <th className="p-4 text-center">ANN</th>
-                  <th className="p-4 text-center">LIG</th>
-                  <th className="p-4 text-center">AGD</th>
-                  <th className="p-4 text-center">VIS</th>
-                  <th className="p-4 text-center">FCH</th>
-                  <th className="p-4 text-right">VGV TOTAL</th>
-                  <th className="p-3 text-center text-blue-300">A/L</th>
-                  <th className="p-3 text-center text-blue-300">L/A</th>
-                  <th className="p-3 text-center text-blue-300">A/V</th>
-                  <th className="p-3 text-center text-blue-300 border-l border-white/20">V/F</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 font-bold italic">
-                {data.teams.map((t, i) => (
-                  <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'}>
-                    <td className="p-4 text-[#020617] uppercase font-black">{t.teamName}</td>
-                    <td className="p-4 text-center text-slate-400">{t.totals.ads}</td>
-                    <td className="p-4 text-center text-slate-400">{t.totals.calls}</td>
-                    <td className="p-4 text-center text-slate-400">{t.totals.appointments}</td>
-                    <td className="p-4 text-center text-slate-400">{t.totals.visits}</td>
-                    <td className="p-4 text-center text-[#020617] font-black">{t.totals.closings}</td>
-                    <td className="p-4 text-right text-[#10b981] font-black whitespace-nowrap">R$ {formatCurrency(t.totals.vgv)}</td>
-                    <td className="p-3 text-center text-blue-600">{t.efficiency.adsToCall.toFixed(1)}</td>
-                    <td className="p-3 text-center text-blue-600">{t.efficiency.callToAppointment.toFixed(1)}</td>
-                    <td className="p-3 text-center text-blue-600">{t.efficiency.appointmentToVisit.toFixed(1)}</td>
-                    <td className="p-3 text-center text-[#2563eb] font-black border-l border-slate-100">{t.efficiency.visitToClosing.toFixed(1)}</td>
+            <div className="overflow-hidden rounded-[1.5rem] border-[4px] border-slate-900">
+              <table className="w-full text-[10px] border-collapse">
+                <thead>
+                  <tr className="bg-[#020617] text-white text-left italic uppercase font-black">
+                    <th className="p-4">EQUIPE</th>
+                    <th className="p-4 text-center">ANN</th>
+                    <th className="p-4 text-center">LIG</th>
+                    <th className="p-4 text-center">AGD</th>
+                    <th className="p-4 text-center">VIS</th>
+                    <th className="p-4 text-center">FCH</th>
+                    <th className="p-4 text-right">VGV TOTAL</th>
+                    <th className="p-3 text-center text-blue-300">A/L</th>
+                    <th className="p-3 text-center text-blue-300">L/A</th>
+                    <th className="p-3 text-center text-blue-300">A/V</th>
+                    <th className="p-3 text-center text-[#10b981] bg-white/10">V/F</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+                </thead>
+                <tbody className="divide-y divide-slate-100 font-bold italic">
+                  {data.teams.map((t, i) => (
+                    <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-slate-50'}>
+                      <td className="p-4 text-[#020617] uppercase font-black">{t.teamName}</td>
+                      <td className="p-4 text-center text-slate-400">{t.totals.ads}</td>
+                      <td className="p-4 text-center text-slate-400">{t.totals.calls}</td>
+                      <td className="p-4 text-center text-slate-400">{t.totals.appointments}</td>
+                      <td className="p-4 text-center text-slate-400">{t.totals.visits}</td>
+                      <td className="p-4 text-center font-black">{t.totals.closings}</td>
+                      <td className="p-4 text-right text-[#10b981] font-black">R$ {formatCurrency(t.totals.vgv)}</td>
+                      <td className="p-3 text-center text-blue-600">{t.efficiency.adsToCall.toFixed(1)}</td>
+                      <td className="p-3 text-center text-blue-600">{t.efficiency.callToAppointment.toFixed(1)}</td>
+                      <td className="p-3 text-center text-blue-600">{t.efficiency.appointmentToVisit.toFixed(1)}</td>
+                      <td className="p-3 text-center text-[#10b981] font-black bg-[#10b981]/5">{t.efficiency.visitToClosing.toFixed(1)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
 
-        {/* Tabela: Ranking Individual */}
-        <div className="mb-12">
-          <div className="flex items-center gap-3 mb-5">
-            <div className="w-2 h-6 bg-[#10b981]"></div>
-            <h3 className="text-[12px] font-black uppercase tracking-[0.3em] italic text-[#10b981]">RANKING INDIVIDUAL DE PERFORMANCE</h3>
-          </div>
-          <div className="overflow-hidden rounded-[1.5rem] border border-slate-200 shadow-md">
-            <table className="w-full text-[9px] border-collapse">
-              <thead>
-                <tr className="bg-slate-50 text-slate-400 text-left italic uppercase font-black border-b border-slate-200">
-                  <th className="p-4 tracking-widest text-[#0f172a]">Vendedor [Equipe]</th>
-                  <th className="p-2 text-center">ANN</th>
-                  <th className="p-2 text-center">LIG</th>
-                  <th className="p-2 text-center">AGD</th>
-                  <th className="p-2 text-center">VIS</th>
-                  <th className="p-2 text-center text-slate-900 font-black">FCH</th>
-                  <th className="p-4 text-right text-slate-900 font-black">VGV INDIVIDUAL</th>
-                  <th className="p-2 text-center text-blue-600">A/L</th>
-                  <th className="p-2 text-center text-blue-600">L/A</th>
-                  <th className="p-2 text-center text-blue-600">A/V</th>
-                  <th className="p-2 text-center text-[#2563eb] font-black">V/F</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 font-bold italic">
-                {data.consultants.sort((a,b) => b.closings - a.closings || b.vgv - a.vgv).map((c, i) => (
-                  <tr key={i} className="hover:bg-slate-50 transition-colors">
-                    <td className="p-4 text-[#0f172a] font-black">
-                      {c.name} <span className="text-[7px] text-slate-300 ml-1 font-normal italic">[{c.team}]</span>
-                    </td>
-                    <td className="p-2 text-center text-slate-300">{c.ads}</td>
-                    <td className="p-2 text-center text-slate-300">{c.calls}</td>
-                    <td className="p-2 text-center text-slate-300">{c.appointments}</td>
-                    <td className="p-2 text-center text-slate-300">{c.visits}</td>
-                    <td className="p-2 text-center text-[#0f172a] font-black">{c.closings}</td>
-                    <td className="p-4 text-right text-[#10b981] font-black bg-[#10b981]/5 whitespace-nowrap">R$ {formatCurrency(c.vgv)}</td>
-                    <td className="p-2 text-center text-slate-400">{c.adsToCall.toFixed(1)}</td>
-                    <td className="p-2 text-center text-slate-400">{c.callToAppointment.toFixed(1)}</td>
-                    <td className="p-2 text-center text-slate-400">{c.appointmentToVisit.toFixed(1)}</td>
-                    <td className="p-2 text-center text-[#2563eb] font-black">{c.visitToClosing.toFixed(1)}</td>
+          {/* Tabela Individual */}
+          <section className="page-break-inside-avoid">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-2 h-6 bg-[#10b981]"></div>
+              <h3 className="text-sm font-black uppercase tracking-[0.2em] italic text-[#0f172a]">RANKING INDIVIDUAL E MÉTRICAS DE CONVERSÃO</h3>
+            </div>
+            <div className="overflow-hidden rounded-[1.5rem] border-[4px] border-slate-900 shadow-xl">
+              <table className="w-full text-[9px] border-collapse">
+                <thead>
+                  <tr className="bg-slate-900 text-white text-left italic uppercase font-black">
+                    <th className="p-4">VENDEDOR [EQUIPE]</th>
+                    <th className="p-2 text-center text-slate-400">ANN</th>
+                    <th className="p-2 text-center text-slate-400">LIG</th>
+                    <th className="p-2 text-center text-slate-400">AGD</th>
+                    <th className="p-2 text-center text-slate-400">VIS</th>
+                    <th className="p-2 text-center text-white">FCH</th>
+                    <th className="p-4 text-right text-[#10b981]">VGV INDIVIDUAL</th>
+                    <th className="p-2 text-center text-blue-300">A/L</th>
+                    <th className="p-2 text-center text-blue-300">L/A</th>
+                    <th className="p-2 text-center text-blue-300">A/V</th>
+                    <th className="p-2 text-center text-[#10b981] font-black">V/F</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody className="divide-y divide-slate-100 font-bold italic">
+                  {data.consultants.sort((a,b) => b.vgv - a.vgv).map((c, i) => (
+                    <tr key={i} className="hover:bg-slate-50 transition-colors">
+                      <td className="p-4 text-[#020617] font-black">
+                        {c.name} <span className="text-[7px] text-slate-400 ml-1 font-normal uppercase">[{c.team}]</span>
+                      </td>
+                      <td className="p-2 text-center text-slate-300">{c.ads}</td>
+                      <td className="p-2 text-center text-slate-300">{c.calls}</td>
+                      <td className="p-2 text-center text-slate-300">{c.appointments}</td>
+                      <td className="p-2 text-center text-slate-300">{c.visits}</td>
+                      <td className="p-2 text-center text-slate-900 font-black">{c.closings}</td>
+                      <td className="p-4 text-right text-[#10b981] font-black bg-[#10b981]/5">R$ {formatCurrency(c.vgv)}</td>
+                      <td className="p-2 text-center text-blue-500">{c.adsToCall.toFixed(1)}</td>
+                      <td className="p-2 text-center text-blue-500">{c.callToAppointment.toFixed(1)}</td>
+                      <td className="p-2 text-center text-blue-500">{c.appointmentToVisit.toFixed(1)}</td>
+                      <td className="p-2 text-center text-[#10b981] font-black">{c.visitToClosing.toFixed(1)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          {/* Diagnosis IA no Report */}
+          {diagnosis && (
+            <div className="bg-[#020617] rounded-[1.5rem] p-10 text-white mb-12 page-break-inside-avoid border-l-[12px] border-blue-600 relative overflow-hidden">
+               <div className="absolute top-[-20px] right-[-20px] opacity-10 rotate-12">
+                 <Sparkles size={180} />
+               </div>
+               <div className="flex items-center gap-3 mb-6">
+                 <Sparkles className="text-blue-400" size={24} />
+                 <h4 className="text-[12px] font-black uppercase tracking-[0.5em] italic">PARECER TÉCNICO ESTRATÉGICO (AI)</h4>
+               </div>
+               <div className="text-[12px] leading-relaxed font-semibold italic opacity-95 space-y-4 max-w-6xl">
+                 {diagnosis.split('\n\n').map((para, i) => (
+                   <p key={i}>{para}</p>
+                 ))}
+               </div>
+            </div>
+          )}
         </div>
 
-        {diagnosis && (
-          <div className="bg-[#020617] rounded-[1.5rem] p-10 text-white mb-12 page-break-inside-avoid relative overflow-hidden shadow-2xl border-l-[8px] border-blue-500">
-            <div className="absolute top-[-30px] right-[-30px] opacity-10">
-              <Sparkles size={150} />
-            </div>
-            <div className="flex items-center gap-3 mb-6 text-blue-400">
-              <Sparkles size={24} />
-              <h4 className="text-[12px] font-black uppercase tracking-[0.4em] italic leading-none">INTELIGÊNCIA ESTRATÉGICA AI</h4>
-            </div>
-            <div className="text-[12px] leading-relaxed font-semibold italic opacity-95 space-y-4 max-w-5xl">
-              {diagnosis.split('\n\n').map((para, i) => (
-                <p key={i}>{para}</p>
-              ))}
-            </div>
-          </div>
-        )}
-
-        <footer className="mt-16 pt-8 text-center border-t border-slate-100 opacity-60">
+        <footer className="mt-12 pt-8 text-center border-t border-slate-100 opacity-50">
           <p className="text-[8px] font-black text-slate-400 uppercase tracking-[1em] italic leading-none">
-            GENESIS INTELLIGENT CORE • SCALING PROTOCOL • {data.reportDate}
+            SISTEMA GENESIS CORE • {data.reportDate} • DOCUMENTO CONFIDENCIAL
           </p>
         </footer>
       </div>
@@ -333,11 +283,11 @@ const App: React.FC = () => {
                 <div className="glass-card p-10 border-t-4 border-blue-600">
                   <div className="flex items-center gap-3 mb-8">
                     <FileText className="text-blue-600" size={24} />
-                    <h2 className="font-black text-sm uppercase tracking-[0.2em] text-slate-800 italic">Relatórios Brutos (Grupo de Vendas)</h2>
+                    <h2 className="font-black text-sm uppercase tracking-[0.2em] text-slate-800 italic">Dados Brutos do Funil</h2>
                   </div>
                   <textarea 
                     value={rawText} onChange={(e) => setRawText(e.target.value)} 
-                    placeholder="Cole aqui os dados das equipes..." 
+                    placeholder="Cole aqui o relatório copiado do grupo..." 
                     className="w-full h-60 bg-slate-50/50 border-2 border-slate-100 rounded-[2rem] p-8 text-sm focus:ring-4 focus:ring-blue-600/5 focus:border-blue-600/30 outline-none font-bold italic transition-all resize-none"
                   />
                 </div>
@@ -347,7 +297,7 @@ const App: React.FC = () => {
                 <div className="glass-card p-10 border-t-4 border-[#10b981] h-full">
                   <div className="flex items-center gap-3 mb-8">
                     <DollarSign className="text-[#10b981]" size={24} />
-                    <h2 className="font-black text-sm uppercase tracking-[0.2em] text-slate-800 italic">Faturamento Bruto (VGV)</h2>
+                    <h2 className="font-black text-sm uppercase tracking-[0.2em] text-slate-800 italic">Faturamento (VGV)</h2>
                   </div>
                   <textarea 
                     value={vgvText} onChange={(e) => setVgvText(e.target.value)} 
@@ -366,24 +316,26 @@ const App: React.FC = () => {
 
             {data && (
               <div className="space-y-16 animate-in fade-in slide-in-from-bottom-6 duration-700 pb-32">
+                {/* Dashboard Header */}
                 <div className="flex flex-col md:flex-row justify-between items-center gap-8 bg-white p-10 rounded-[3rem] shadow-xl border border-slate-100">
                   <div className="text-center md:text-left">
                     <h2 className="text-5xl font-black text-[#020617] tracking-tighter italic uppercase leading-none">ANÁLISE DE PERFORMANCE</h2>
-                    <p className="text-slate-400 text-[11px] font-black mt-3 uppercase tracking-[0.4em]">PROTOCOLO DE ESCALONAMENTO • {data.reportDate}</p>
+                    <p className="text-slate-400 text-[11px] font-black mt-3 uppercase tracking-[0.4em]">CONSORTIUM SALES OPS HUB • {data.reportDate}</p>
                   </div>
                   <div className="flex gap-5">
                     <button onClick={handleAiDiagnosis} disabled={loadingAi} className="bg-indigo-50 text-indigo-700 px-8 py-5 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-100 transition-all flex items-center gap-3 border-2 border-indigo-100 active:scale-95">
                       {loadingAi ? <RefreshCw className="animate-spin" size={18} /> : <Sparkles size={18} />} 
-                      DIAGNÓSTICO IA
+                      GERAR DIAGNÓSTICO IA
                     </button>
                     <button onClick={() => setView('report')} className="bg-blue-600 hover:bg-blue-700 text-white px-10 py-5 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-2xl shadow-blue-200 transition-all flex items-center gap-3 active:scale-95">
-                      <Printer size={20} /> RELATÓRIO PDF
+                      <Printer size={20} /> RELATÓRIO EXECUTIVO
                     </button>
                   </div>
                 </div>
 
+                {/* KPI Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  <div className="bg-[#020617] text-white p-10 rounded-[3rem] flex flex-col justify-center relative overflow-hidden shadow-2xl">
+                  <div className="bg-[#020617] text-white p-10 rounded-[3rem] flex flex-col justify-center relative overflow-hidden shadow-2xl border-[4px] border-[#2563eb]">
                     <div className="absolute right-[-40px] top-[-40px] opacity-10">
                       <Wallet size={180} />
                     </div>
@@ -392,28 +344,15 @@ const App: React.FC = () => {
                       R$ {formatCurrency(data.totals.vgv)}
                     </h3>
                   </div>
-                  <StatCard label="TICKET MÉDIO OPERACIONAL" value={`R$ ${formatCurrency(data.ticketMedio)}`} icon={DollarSign} colorClass="border-[#10b981]" subtitle="ROI DO FUNIL" />
-                  <StatCard label="TICKET POR CONSULTOR" value={`R$ ${formatCurrency(data.ticketMedioPorConsultor)}`} icon={Users} colorClass="border-[#2563eb]" subtitle="EFICIÊNCIA INDIVIDUAL" />
+                  <StatCard label="TICKET MÉDIO OPERACIONAL" value={`R$ ${formatCurrency(data.ticketMedio)}`} icon={DollarSign} colorClass="border-[#10b981]" subtitle="EFICIÊNCIA POR FECHAMENTO" />
+                  <StatCard label="CONVERSÃO MÉDIA V/F" value={data.efficiency.visitToClosing.toFixed(1)} icon={Activity} colorClass="border-[#2563eb]" subtitle="TAXA DE SUCESSO EM VISITA" />
                 </div>
 
-                <div>
-                  <div className="flex items-center gap-4 mb-8">
-                    <div className="w-2 h-6 bg-[#020617]"></div>
-                    <h3 className="font-black uppercase tracking-[0.3em] text-sm text-slate-800 italic">MÉTRICAS DE VOLUME OPERACIONAL</h3>
-                  </div>
-                  <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
-                    <StatCard label="ANÚNCIOS" value={data.totals.ads} icon={FileText} colorClass="border-slate-200" />
-                    <StatCard label="LIGAÇÕES" value={data.totals.calls} icon={Users} colorClass="border-slate-200" />
-                    <StatCard label="AGEND." value={data.totals.appointments} icon={Target} colorClass="border-slate-200" />
-                    <StatCard label="VISITAS" value={data.totals.visits} icon={Activity} colorClass="border-slate-200" />
-                    <StatCard label="FECH." value={data.totals.closings} icon={CheckCircle2} colorClass="border-[#10b981]" />
-                  </div>
-                </div>
-
+                {/* Main Table Dashboard */}
                 <div className="glass-card overflow-hidden border-2 border-slate-50 shadow-2xl">
                   <div className="bg-slate-50/50 p-8 border-b border-slate-100 flex items-center gap-3">
                     <PieChart size={24} className="text-blue-600" />
-                    <h3 className="font-black uppercase tracking-[0.2em] text-sm text-slate-800 italic">PERFORMANCE POR UNIDADE ESTRATÉGICA</h3>
+                    <h3 className="font-black uppercase tracking-[0.2em] text-sm text-slate-800 italic">MÉTRICAS POR UNIDADE</h3>
                   </div>
                   <div className="overflow-x-auto">
                     <table className="w-full text-left">
@@ -430,14 +369,14 @@ const App: React.FC = () => {
                       </thead>
                       <tbody className="divide-y divide-slate-50 font-black text-xs italic">
                         {data.teams.map((t, i) => (
-                          <tr key={i} className="hover:bg-slate-50/50 transition-colors">
+                          <tr key={i} className="hover:bg-slate-50 transition-colors">
                             <td className="px-10 py-7 text-[#020617] uppercase text-sm">{t.teamName}</td>
                             <td className="px-6 text-center text-slate-400">{t.totals.ads}</td>
                             <td className="px-6 text-center text-slate-400">{t.totals.calls}</td>
                             <td className="px-6 text-center text-slate-400">{t.totals.appointments}</td>
                             <td className="px-6 text-center text-slate-400">{t.totals.visits}</td>
                             <td className="px-6 text-center text-[#020617] text-lg">{t.totals.closings}</td>
-                            <td className="px-10 text-right text-[#10b981] text-sm">R$ {formatCurrency(t.totals.vgv)}</td>
+                            <td className="px-10 text-right text-[#10b981] text-sm font-black italic">R$ {formatCurrency(t.totals.vgv)}</td>
                           </tr>
                         ))}
                       </tbody>
@@ -445,8 +384,9 @@ const App: React.FC = () => {
                   </div>
                 </div>
 
+                {/* AI diagnosis Dashboard */}
                 {diagnosis && (
-                  <div className="bg-[#020617] rounded-[3rem] p-12 text-white shadow-2xl relative overflow-hidden">
+                  <div className="bg-[#020617] rounded-[3rem] p-12 text-white shadow-2xl relative overflow-hidden border-[6px] border-[#2563eb]">
                     <div className="absolute right-[-40px] bottom-[-40px] opacity-10">
                       <Sparkles size={250} />
                     </div>
