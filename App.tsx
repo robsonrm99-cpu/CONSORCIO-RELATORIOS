@@ -115,42 +115,42 @@ const App: React.FC = () => {
           </div>
         </div>
 
-        {/* Header Visual Principal */}
+        {/* Header Visual Principal - Mais Sóbrio */}
         <div className="mt-12 mb-8 text-center">
-          <h1 className="text-3xl font-black text-[#0f172a] uppercase tracking-tight italic border-b-2 border-[#0f172a] pb-1 inline-block px-8 leading-tight">
+          <h1 className="text-3xl font-black text-[#0f172a] uppercase tracking-tight italic border-b-[4px] border-[#0f172a] pb-2 inline-block px-10 leading-tight">
             RELATÓRIO CONSOLIDADO DE PERFORMANCE
           </h1>
-          <p className="text-slate-400 font-bold text-sm mt-2 tracking-[0.3em] uppercase italic">{data.reportDate.split('').join(' ')}</p>
+          <p className="text-slate-400 font-bold text-sm mt-3 tracking-[0.4em] uppercase italic">{data.reportDate.split('').join(' ')}</p>
         </div>
 
-        {/* Card de Faturamento Global */}
-        <div className="border-[2px] border-[#020617] rounded-[2rem] p-8 mb-10 flex flex-col items-center shadow-md max-w-2xl mx-auto bg-white">
-          <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-3 text-center opacity-80 italic">FATURAMENTO CONSOLIDADO GLOBAL</p>
-          <h2 className="text-5xl font-black text-[#020617] italic mb-8 tracking-tighter leading-none">
+        {/* Card de Faturamento Global - Executivo Style */}
+        <div className="border-[4px] border-[#020617] rounded-[2.5rem] p-10 mb-12 flex flex-col items-center shadow-lg max-w-3xl mx-auto bg-white">
+          <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.5em] mb-4 text-center opacity-70 italic">FATURAMENTO CONSOLIDADO GLOBAL</p>
+          <h2 className="text-6xl font-black text-[#020617] italic mb-10 tracking-tighter leading-none">
             R$ {formatCurrency(data.totals.vgv)}
           </h2>
           
-          <div className="w-full max-w-lg h-px bg-slate-100 mb-8"></div>
+          <div className="w-full h-px bg-slate-100 mb-10"></div>
           
-          <div className="grid grid-cols-2 gap-12 w-full max-w-xl">
+          <div className="grid grid-cols-2 gap-16 w-full">
             <div className="text-center">
-              <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1.5 italic">TICKET OPERACIONAL</p>
-              <p className="text-2xl font-black text-[#10b981] italic tracking-tighter leading-none">R$ {formatCurrency(data.ticketMedio)}</p>
+              <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em] mb-2 italic">TICKET OPERACIONAL</p>
+              <p className="text-3xl font-black text-[#10b981] italic tracking-tighter leading-none">R$ {formatCurrency(data.ticketMedio)}</p>
             </div>
             <div className="text-center">
-              <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1.5 italic">TICKET POR VENDEDOR</p>
-              <p className="text-2xl font-black text-[#2563eb] italic tracking-tighter leading-none">R$ {formatCurrency(data.ticketMedioPorConsultor)}</p>
+              <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em] mb-2 italic">TICKET POR VENDEDOR</p>
+              <p className="text-3xl font-black text-[#2563eb] italic tracking-tighter leading-none">R$ {formatCurrency(data.ticketMedioPorConsultor)}</p>
             </div>
           </div>
         </div>
 
         {/* Seção: Métricas de Volume */}
-        <div className="mb-10">
-          <div className="flex items-center gap-2 mb-4">
-            <div className="w-1.5 h-4 bg-[#020617]"></div>
-            <h3 className="text-[10px] font-black uppercase tracking-[0.2em] italic text-[#020617]">MÉTRICAS DE VOLUME OPERACIONAL</h3>
+        <div className="mb-12">
+          <div className="flex items-center gap-3 mb-5">
+            <div className="w-2 h-6 bg-[#020617]"></div>
+            <h3 className="text-[12px] font-black uppercase tracking-[0.3em] italic text-[#020617]">MÉTRICAS DE VOLUME OPERACIONAL</h3>
           </div>
-          <div className="grid grid-cols-5 gap-3">
+          <div className="grid grid-cols-5 gap-4">
             {[
               { label: 'ANÚNCIOS', value: data.totals.ads },
               { label: 'LIGAÇÕES', value: data.totals.calls },
@@ -158,72 +158,72 @@ const App: React.FC = () => {
               { label: 'VISITAS', value: data.totals.visits },
               { label: 'FECHAMENTOS', value: data.totals.closings }
             ].map((m, i) => (
-              <div key={i} className="border border-slate-100 rounded-[1.2rem] p-4 text-center bg-slate-50/20 shadow-sm">
-                <p className="text-[7px] font-black text-slate-400 uppercase mb-2 tracking-widest leading-none italic">{m.label}</p>
-                <p className="text-2xl font-black text-[#0f172a] italic leading-none tracking-tight">{m.value}</p>
+              <div key={i} className="border-[3px] border-slate-100 rounded-[1.5rem] p-5 text-center bg-white shadow-sm">
+                <p className="text-[8px] font-black text-slate-400 uppercase mb-3 tracking-widest leading-none italic">{m.label}</p>
+                <p className="text-3xl font-black text-[#0f172a] italic leading-none tracking-tight">{m.value}</p>
               </div>
             ))}
           </div>
         </div>
 
         {/* Seção: Eficiência de Funil */}
-        <div className="mb-10">
-          <div className="flex items-center gap-2 mb-4">
-            <div className="w-1.5 h-4 bg-[#2563eb]"></div>
-            <h3 className="text-[10px] font-black uppercase tracking-[0.2em] italic text-[#2563eb]">EFICIÊNCIA DE CONVERSÃO DO FUNIL</h3>
+        <div className="mb-12">
+          <div className="flex items-center gap-3 mb-5">
+            <div className="w-2 h-6 bg-[#2563eb]"></div>
+            <h3 className="text-[12px] font-black uppercase tracking-[0.3em] italic text-[#2563eb]">EFICIÊNCIA DE CONVERSÃO DO FUNIL</h3>
           </div>
-          <div className="grid grid-cols-4 gap-3">
+          <div className="grid grid-cols-4 gap-4">
             {[
               { label: 'ANÚNCIOS/LEAD', value: data.efficiency.adsToCall },
               { label: 'LIGAÇÃO/AGEND.', value: data.efficiency.callToAppointment },
               { label: 'AGEND./VISITA', value: data.efficiency.appointmentToVisit },
               { label: 'VISITA/FECH.', value: data.efficiency.visitToClosing }
             ].map((m, i) => (
-              <div key={i} className="bg-slate-50 border border-slate-100 rounded-[1.2rem] p-5 text-center shadow-sm">
-                <p className="text-[7px] font-black text-slate-400 uppercase mb-2 tracking-widest leading-none italic">{m.label}</p>
-                <p className="text-3xl font-black text-[#2563eb] italic leading-none tracking-tight">{m.value.toFixed(1)}</p>
+              <div key={i} className="bg-slate-50 border-[2px] border-slate-100 rounded-[1.5rem] p-6 text-center shadow-inner">
+                <p className="text-[8px] font-black text-slate-400 uppercase mb-3 tracking-widest leading-none italic">{m.label}</p>
+                <p className="text-4xl font-black text-[#2563eb] italic leading-none tracking-tight">{m.value.toFixed(1)}</p>
               </div>
             ))}
           </div>
         </div>
 
         {/* Tabela: Performance por Unidade */}
-        <div className="mb-10 page-break-inside-avoid">
-          <div className="flex items-center gap-2 mb-4">
-            <div className="w-1.5 h-4 bg-[#2563eb]"></div>
-            <h3 className="text-[10px] font-black uppercase tracking-[0.2em] italic text-[#2563eb]">PERFORMANCE E EFICIÊNCIA POR UNIDADE</h3>
+        <div className="mb-12 page-break-inside-avoid">
+          <div className="flex items-center gap-3 mb-5">
+            <div className="w-2 h-6 bg-[#2563eb]"></div>
+            <h3 className="text-[12px] font-black uppercase tracking-[0.3em] italic text-[#2563eb]">PERFORMANCE E EFICIÊNCIA POR UNIDADE</h3>
           </div>
-          <div className="overflow-hidden rounded-[1rem] border border-slate-200">
-            <table className="w-full text-[9px] border-collapse">
+          <div className="overflow-hidden rounded-[1.5rem] border-[3px] border-slate-900">
+            <table className="w-full text-[10px] border-collapse">
               <thead>
                 <tr className="bg-[#020617] text-white text-left italic uppercase font-black">
-                  <th className="p-3 tracking-widest">Equipe</th>
-                  <th className="p-3 text-center">ANN</th>
-                  <th className="p-3 text-center">LIG</th>
-                  <th className="p-3 text-center">AGD</th>
-                  <th className="p-3 text-center">VIS</th>
-                  <th className="p-3 text-center">FCH</th>
-                  <th className="p-3 text-right">VGV TOTAL</th>
-                  <th className="p-2 text-center text-blue-300">A/L</th>
-                  <th className="p-2 text-center text-blue-300">L/A</th>
-                  <th className="p-2 text-center text-blue-300">A/V</th>
-                  <th className="p-2 text-center text-blue-300">V/F</th>
+                  <th className="p-4 tracking-widest">Equipe</th>
+                  <th className="p-4 text-center">ANN</th>
+                  <th className="p-4 text-center">LIG</th>
+                  <th className="p-4 text-center">AGD</th>
+                  <th className="p-4 text-center">VIS</th>
+                  <th className="p-4 text-center">FCH</th>
+                  <th className="p-4 text-right">VGV TOTAL</th>
+                  <th className="p-3 text-center text-blue-300">A/L</th>
+                  <th className="p-3 text-center text-blue-300">L/A</th>
+                  <th className="p-3 text-center text-blue-300">A/V</th>
+                  <th className="p-3 text-center text-blue-300 border-l border-white/20">V/F</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 font-bold italic">
                 {data.teams.map((t, i) => (
-                  <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-slate-50'}>
-                    <td className="p-3 text-[#020617] uppercase font-black">{t.teamName}</td>
-                    <td className="p-3 text-center text-slate-400">{t.totals.ads}</td>
-                    <td className="p-3 text-center text-slate-400">{t.totals.calls}</td>
-                    <td className="p-3 text-center text-slate-400">{t.totals.appointments}</td>
-                    <td className="p-3 text-center text-slate-400">{t.totals.visits}</td>
-                    <td className="p-3 text-center text-[#020617]">{t.totals.closings}</td>
-                    <td className="p-3 text-right text-[#10b981] font-black whitespace-nowrap">R$ {formatCurrency(t.totals.vgv)}</td>
-                    <td className="p-2 text-center text-blue-600">{t.efficiency.adsToCall.toFixed(1)}</td>
-                    <td className="p-2 text-center text-blue-600">{t.efficiency.callToAppointment.toFixed(1)}</td>
-                    <td className="p-2 text-center text-blue-600">{t.efficiency.appointmentToVisit.toFixed(1)}</td>
-                    <td className="p-2 text-center text-blue-600">{t.efficiency.visitToClosing.toFixed(1)}</td>
+                  <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'}>
+                    <td className="p-4 text-[#020617] uppercase font-black">{t.teamName}</td>
+                    <td className="p-4 text-center text-slate-400">{t.totals.ads}</td>
+                    <td className="p-4 text-center text-slate-400">{t.totals.calls}</td>
+                    <td className="p-4 text-center text-slate-400">{t.totals.appointments}</td>
+                    <td className="p-4 text-center text-slate-400">{t.totals.visits}</td>
+                    <td className="p-4 text-center text-[#020617] font-black">{t.totals.closings}</td>
+                    <td className="p-4 text-right text-[#10b981] font-black whitespace-nowrap">R$ {formatCurrency(t.totals.vgv)}</td>
+                    <td className="p-3 text-center text-blue-600">{t.efficiency.adsToCall.toFixed(1)}</td>
+                    <td className="p-3 text-center text-blue-600">{t.efficiency.callToAppointment.toFixed(1)}</td>
+                    <td className="p-3 text-center text-blue-600">{t.efficiency.appointmentToVisit.toFixed(1)}</td>
+                    <td className="p-3 text-center text-[#2563eb] font-black border-l border-slate-100">{t.efficiency.visitToClosing.toFixed(1)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -232,44 +232,44 @@ const App: React.FC = () => {
         </div>
 
         {/* Tabela: Ranking Individual */}
-        <div className="mb-10">
-          <div className="flex items-center gap-2 mb-4">
-            <div className="w-1.5 h-4 bg-[#10b981]"></div>
-            <h3 className="text-[10px] font-black uppercase tracking-[0.2em] italic text-[#10b981]">RANKING INDIVIDUAL DE PERFORMANCE</h3>
+        <div className="mb-12">
+          <div className="flex items-center gap-3 mb-5">
+            <div className="w-2 h-6 bg-[#10b981]"></div>
+            <h3 className="text-[12px] font-black uppercase tracking-[0.3em] italic text-[#10b981]">RANKING INDIVIDUAL DE PERFORMANCE</h3>
           </div>
-          <div className="overflow-hidden rounded-[1rem] border border-slate-200 shadow-sm">
-            <table className="w-full text-[8px] border-collapse">
+          <div className="overflow-hidden rounded-[1.5rem] border border-slate-200 shadow-md">
+            <table className="w-full text-[9px] border-collapse">
               <thead>
                 <tr className="bg-slate-50 text-slate-400 text-left italic uppercase font-black border-b border-slate-200">
-                  <th className="p-3 tracking-widest text-[#0f172a]">Vendedor [Equipe]</th>
+                  <th className="p-4 tracking-widest text-[#0f172a]">Vendedor [Equipe]</th>
                   <th className="p-2 text-center">ANN</th>
                   <th className="p-2 text-center">LIG</th>
                   <th className="p-2 text-center">AGD</th>
                   <th className="p-2 text-center">VIS</th>
-                  <th className="p-2 text-center text-slate-900">FCH</th>
-                  <th className="p-2 text-right text-slate-900">VGV TOTAL</th>
+                  <th className="p-2 text-center text-slate-900 font-black">FCH</th>
+                  <th className="p-4 text-right text-slate-900 font-black">VGV INDIVIDUAL</th>
                   <th className="p-2 text-center text-blue-600">A/L</th>
                   <th className="p-2 text-center text-blue-600">L/A</th>
                   <th className="p-2 text-center text-blue-600">A/V</th>
-                  <th className="p-2 text-center text-blue-600">V/F</th>
+                  <th className="p-2 text-center text-[#2563eb] font-black">V/F</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 font-bold italic">
                 {data.consultants.sort((a,b) => b.closings - a.closings || b.vgv - a.vgv).map((c, i) => (
-                  <tr key={i} className="hover:bg-slate-50/50 transition-colors">
-                    <td className="p-3 text-[#0f172a] font-black">
-                      {c.name} <span className="text-[6px] text-slate-300 ml-1 font-normal italic">[{c.team}]</span>
+                  <tr key={i} className="hover:bg-slate-50 transition-colors">
+                    <td className="p-4 text-[#0f172a] font-black">
+                      {c.name} <span className="text-[7px] text-slate-300 ml-1 font-normal italic">[{c.team}]</span>
                     </td>
                     <td className="p-2 text-center text-slate-300">{c.ads}</td>
                     <td className="p-2 text-center text-slate-300">{c.calls}</td>
                     <td className="p-2 text-center text-slate-300">{c.appointments}</td>
                     <td className="p-2 text-center text-slate-300">{c.visits}</td>
                     <td className="p-2 text-center text-[#0f172a] font-black">{c.closings}</td>
-                    <td className="p-2 text-right text-[#10b981] font-black bg-[#10b981]/5 whitespace-nowrap">R$ {formatCurrency(c.vgv)}</td>
-                    <td className="p-2 text-center text-[#2563eb]">{c.adsToCall.toFixed(1)}</td>
-                    <td className="p-2 text-center text-[#2563eb]">{c.callToAppointment.toFixed(1)}</td>
-                    <td className="p-2 text-center text-[#2563eb]">{c.appointmentToVisit.toFixed(1)}</td>
-                    <td className="p-2 text-center text-[#2563eb]">{c.visitToClosing.toFixed(1)}</td>
+                    <td className="p-4 text-right text-[#10b981] font-black bg-[#10b981]/5 whitespace-nowrap">R$ {formatCurrency(c.vgv)}</td>
+                    <td className="p-2 text-center text-slate-400">{c.adsToCall.toFixed(1)}</td>
+                    <td className="p-2 text-center text-slate-400">{c.callToAppointment.toFixed(1)}</td>
+                    <td className="p-2 text-center text-slate-400">{c.appointmentToVisit.toFixed(1)}</td>
+                    <td className="p-2 text-center text-[#2563eb] font-black">{c.visitToClosing.toFixed(1)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -278,15 +278,15 @@ const App: React.FC = () => {
         </div>
 
         {diagnosis && (
-          <div className="bg-[#020617] rounded-[1rem] p-6 text-white mb-10 page-break-inside-avoid relative overflow-hidden shadow-lg border-l-4 border-blue-500">
-            <div className="absolute top-[-20px] right-[-20px] opacity-5">
-              <Sparkles size={100} />
+          <div className="bg-[#020617] rounded-[1.5rem] p-10 text-white mb-12 page-break-inside-avoid relative overflow-hidden shadow-2xl border-l-[8px] border-blue-500">
+            <div className="absolute top-[-30px] right-[-30px] opacity-10">
+              <Sparkles size={150} />
             </div>
-            <div className="flex items-center gap-2 mb-3 text-blue-400">
-              <Sparkles size={16} />
-              <h4 className="text-[9px] font-black uppercase tracking-widest italic leading-none">INTELIGÊNCIA ESTRATÉGICA AI</h4>
+            <div className="flex items-center gap-3 mb-6 text-blue-400">
+              <Sparkles size={24} />
+              <h4 className="text-[12px] font-black uppercase tracking-[0.4em] italic leading-none">INTELIGÊNCIA ESTRATÉGICA AI</h4>
             </div>
-            <div className="text-[10px] leading-relaxed font-semibold italic opacity-90 space-y-2 max-w-4xl">
+            <div className="text-[12px] leading-relaxed font-semibold italic opacity-95 space-y-4 max-w-5xl">
               {diagnosis.split('\n\n').map((para, i) => (
                 <p key={i}>{para}</p>
               ))}
@@ -294,9 +294,9 @@ const App: React.FC = () => {
           </div>
         )}
 
-        <footer className="mt-12 pt-6 text-center border-t border-slate-100 opacity-50">
-          <p className="text-[7px] font-black text-slate-400 uppercase tracking-[0.8em] italic leading-none">
-            GENESIS INTELLIGENT CORE • OPERATIONAL SCALING PROTOCOL • {data.reportDate}
+        <footer className="mt-16 pt-8 text-center border-t border-slate-100 opacity-60">
+          <p className="text-[8px] font-black text-slate-400 uppercase tracking-[1em] italic leading-none">
+            GENESIS INTELLIGENT CORE • SCALING PROTOCOL • {data.reportDate}
           </p>
         </footer>
       </div>
@@ -328,7 +328,6 @@ const App: React.FC = () => {
           </nav>
 
           <main className="max-w-7xl mx-auto px-8 py-12 no-print">
-            {/* Input Section */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 mb-20">
               <div className="lg:col-span-8">
                 <div className="glass-card p-10 border-t-4 border-blue-600">
@@ -367,7 +366,6 @@ const App: React.FC = () => {
 
             {data && (
               <div className="space-y-16 animate-in fade-in slide-in-from-bottom-6 duration-700 pb-32">
-                {/* Header Performance */}
                 <div className="flex flex-col md:flex-row justify-between items-center gap-8 bg-white p-10 rounded-[3rem] shadow-xl border border-slate-100">
                   <div className="text-center md:text-left">
                     <h2 className="text-5xl font-black text-[#020617] tracking-tighter italic uppercase leading-none">ANÁLISE DE PERFORMANCE</h2>
@@ -384,7 +382,6 @@ const App: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Grid de KPIs Financeiros */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                   <div className="bg-[#020617] text-white p-10 rounded-[3rem] flex flex-col justify-center relative overflow-hidden shadow-2xl">
                     <div className="absolute right-[-40px] top-[-40px] opacity-10">
@@ -399,7 +396,6 @@ const App: React.FC = () => {
                   <StatCard label="TICKET POR CONSULTOR" value={`R$ ${formatCurrency(data.ticketMedioPorConsultor)}`} icon={Users} colorClass="border-[#2563eb]" subtitle="EFICIÊNCIA INDIVIDUAL" />
                 </div>
 
-                {/* Métricas Operacionais - Dashboard */}
                 <div>
                   <div className="flex items-center gap-4 mb-8">
                     <div className="w-2 h-6 bg-[#020617]"></div>
@@ -414,7 +410,6 @@ const App: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Dashboard: Performance das Equipes */}
                 <div className="glass-card overflow-hidden border-2 border-slate-50 shadow-2xl">
                   <div className="bg-slate-50/50 p-8 border-b border-slate-100 flex items-center gap-3">
                     <PieChart size={24} className="text-blue-600" />
@@ -450,7 +445,6 @@ const App: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Inteligência IA - Dashboard View */}
                 {diagnosis && (
                   <div className="bg-[#020617] rounded-[3rem] p-12 text-white shadow-2xl relative overflow-hidden">
                     <div className="absolute right-[-40px] bottom-[-40px] opacity-10">
