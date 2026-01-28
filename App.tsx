@@ -93,23 +93,23 @@ const App: React.FC = () => {
   const ReportView = ({ data }: { data: DashboardData }) => {
     return (
       <div className="bg-white min-h-screen p-6 printable-content max-w-[297mm] mx-auto shadow-none">
-        {/* Navbar para Controle */}
+        {/* Navbar no-print */}
         <div className="no-print fixed top-0 left-0 right-0 bg-[#020617] text-white p-4 flex justify-between items-center z-[100] shadow-2xl">
           <div className="flex items-center gap-3 ml-4">
             <Activity size={20} className="text-blue-500" />
             <span className="font-black text-[10px] tracking-[0.3em] uppercase italic">SALES OPS CONSORTIUM HUB</span>
           </div>
           <div className="flex gap-4 mr-4">
-            <button onClick={() => window.print()} className="bg-blue-600 hover:bg-blue-500 text-white px-8 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest flex items-center gap-2 transition-all">
-              <Printer size={16} /> GERAR PDF
+            <button onClick={() => window.print()} className="bg-blue-600 hover:bg-blue-500 text-white px-8 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest flex items-center gap-2 transition-all active:scale-95 shadow-lg shadow-blue-500/20">
+              <Printer size={16} /> IMPRIMIR PDF
             </button>
-            <button onClick={() => setView('dashboard')} className="bg-white/5 hover:bg-white/10 text-white px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest flex items-center gap-2 transition-all border border-white/10">
-              <ArrowLeft size={16} /> PAINEL
+            <button onClick={() => setView('dashboard')} className="bg-white/5 hover:bg-white/10 text-white px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest flex items-center gap-2 transition-all border border-white/10 active:scale-95">
+              <ArrowLeft size={16} /> VOLTAR AO PAINEL
             </button>
           </div>
         </div>
 
-        {/* Header Visual Principal */}
+        {/* Cabeçalho Relatório */}
         <div className="mt-16 mb-8 text-center">
           <h1 className="text-4xl font-black text-[#0f172a] uppercase tracking-tight italic border-b-[6px] border-[#0f172a] pb-2 inline-block px-12 leading-tight">
             RELATÓRIO DE PERFORMANCE ESTRATÉGICA
@@ -117,61 +117,60 @@ const App: React.FC = () => {
           <p className="text-slate-400 font-bold text-xs mt-4 tracking-[0.5em] uppercase italic">{data.reportDate.split('').join(' ')}</p>
         </div>
 
-        {/* KPIs Globais no Report */}
+        {/* KPIs Globais */}
         <div className="grid grid-cols-3 gap-6 mb-10">
-          <div className="border-[4px] border-[#020617] rounded-[2rem] p-8 bg-white flex flex-col items-center">
+          <div className="border-[4px] border-[#020617] rounded-[2rem] p-8 bg-white flex flex-col items-center shadow-sm">
              <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.4em] mb-2 italic text-center">VGV GLOBAL CONSOLIDADO</p>
-             <h2 className="text-4xl font-black text-[#020617] italic tracking-tighter">R$ {formatCurrency(data.totals.vgv)}</h2>
+             <h2 className="text-4xl font-black text-[#020617] italic tracking-tighter leading-none">R$ {formatCurrency(data.totals.vgv)}</h2>
           </div>
-          <div className="border-[4px] border-slate-200 rounded-[2rem] p-8 bg-white flex flex-col items-center">
-             <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.4em] mb-2 italic text-center">TICKET OPERACIONAL</p>
-             <h2 className="text-4xl font-black text-[#10b981] italic tracking-tighter">R$ {formatCurrency(data.ticketMedio)}</h2>
+          <div className="border-[4px] border-slate-200 rounded-[2rem] p-8 bg-white flex flex-col items-center shadow-sm">
+             <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.4em] mb-2 italic text-center">TICKET MÉDIO OPERACIONAL</p>
+             <h2 className="text-4xl font-black text-[#10b981] italic tracking-tighter leading-none">R$ {formatCurrency(data.ticketMedio)}</h2>
           </div>
-          <div className="border-[4px] border-slate-200 rounded-[2rem] p-8 bg-white flex flex-col items-center">
-             <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.4em] mb-2 italic text-center">EFICIÊNCIA GLOBAL V/F</p>
-             <h2 className="text-4xl font-black text-[#2563eb] italic tracking-tighter">{data.efficiency.visitToClosing.toFixed(1)}</h2>
+          <div className="border-[4px] border-slate-200 rounded-[2rem] p-8 bg-white flex flex-col items-center shadow-sm">
+             <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.4em] mb-2 italic text-center">EFICIÊNCIA MÉDIA V/F</p>
+             <h2 className="text-4xl font-black text-[#2563eb] italic tracking-tighter leading-none">{data.efficiency.visitToClosing.toFixed(1)}</h2>
           </div>
         </div>
 
-        {/* Tabelas de Métricas Completas */}
+        {/* Tabela de Unidades Completa */}
         <div className="space-y-12">
-          {/* Tabela de Unidades */}
           <section className="page-break-inside-avoid">
-            <div className="flex items-center gap-3 mb-4">
+            <div className="flex items-center gap-3 mb-5">
               <div className="w-2 h-6 bg-[#2563eb]"></div>
               <h3 className="text-sm font-black uppercase tracking-[0.2em] italic text-[#0f172a]">EFICIÊNCIA POR UNIDADE ESTRATÉGICA</h3>
             </div>
-            <div className="overflow-hidden rounded-[1.5rem] border-[4px] border-slate-900">
+            <div className="overflow-hidden rounded-[1.5rem] border-[4px] border-slate-900 shadow-md">
               <table className="w-full text-[10px] border-collapse">
                 <thead>
                   <tr className="bg-[#020617] text-white text-left italic uppercase font-black">
-                    <th className="p-4">EQUIPE</th>
+                    <th className="p-4 tracking-widest">EQUIPE</th>
                     <th className="p-4 text-center">ANN</th>
                     <th className="p-4 text-center">LIG</th>
                     <th className="p-4 text-center">AGD</th>
                     <th className="p-4 text-center">VIS</th>
-                    <th className="p-4 text-center">FCH</th>
+                    <th className="p-4 text-center text-blue-300">FCH</th>
                     <th className="p-4 text-right">VGV TOTAL</th>
-                    <th className="p-3 text-center text-blue-300">A/L</th>
-                    <th className="p-3 text-center text-blue-300">L/A</th>
-                    <th className="p-3 text-center text-blue-300">A/V</th>
-                    <th className="p-3 text-center text-[#10b981] bg-white/10">V/F</th>
+                    <th className="p-3 text-center text-blue-400 border-l border-white/10">A/L</th>
+                    <th className="p-3 text-center text-blue-400">L/A</th>
+                    <th className="p-3 text-center text-blue-400">A/V</th>
+                    <th className="p-3 text-center text-[#10b981] font-black">V/F</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 font-bold italic">
                   {data.teams.map((t, i) => (
-                    <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-slate-50'}>
+                    <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'}>
                       <td className="p-4 text-[#020617] uppercase font-black">{t.teamName}</td>
                       <td className="p-4 text-center text-slate-400">{t.totals.ads}</td>
                       <td className="p-4 text-center text-slate-400">{t.totals.calls}</td>
                       <td className="p-4 text-center text-slate-400">{t.totals.appointments}</td>
                       <td className="p-4 text-center text-slate-400">{t.totals.visits}</td>
-                      <td className="p-4 text-center font-black">{t.totals.closings}</td>
+                      <td className="p-4 text-center font-black text-blue-600 text-sm">{t.totals.closings}</td>
                       <td className="p-4 text-right text-[#10b981] font-black">R$ {formatCurrency(t.totals.vgv)}</td>
-                      <td className="p-3 text-center text-blue-600">{t.efficiency.adsToCall.toFixed(1)}</td>
+                      <td className="p-3 text-center text-blue-600 border-l border-slate-100">{t.efficiency.adsToCall.toFixed(1)}</td>
                       <td className="p-3 text-center text-blue-600">{t.efficiency.callToAppointment.toFixed(1)}</td>
                       <td className="p-3 text-center text-blue-600">{t.efficiency.appointmentToVisit.toFixed(1)}</td>
-                      <td className="p-3 text-center text-[#10b981] font-black bg-[#10b981]/5">{t.efficiency.visitToClosing.toFixed(1)}</td>
+                      <td className="p-3 text-center text-[#10b981] font-black bg-emerald-50/30">{t.efficiency.visitToClosing.toFixed(1)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -179,9 +178,9 @@ const App: React.FC = () => {
             </div>
           </section>
 
-          {/* Tabela Individual */}
+          {/* Ranking Individual Completo */}
           <section className="page-break-inside-avoid">
-            <div className="flex items-center gap-3 mb-4">
+            <div className="flex items-center gap-3 mb-5">
               <div className="w-2 h-6 bg-[#10b981]"></div>
               <h3 className="text-sm font-black uppercase tracking-[0.2em] italic text-[#0f172a]">RANKING INDIVIDUAL E MÉTRICAS DE CONVERSÃO</h3>
             </div>
@@ -189,14 +188,14 @@ const App: React.FC = () => {
               <table className="w-full text-[9px] border-collapse">
                 <thead>
                   <tr className="bg-slate-900 text-white text-left italic uppercase font-black">
-                    <th className="p-4">VENDEDOR [EQUIPE]</th>
-                    <th className="p-2 text-center text-slate-400">ANN</th>
-                    <th className="p-2 text-center text-slate-400">LIG</th>
-                    <th className="p-2 text-center text-slate-400">AGD</th>
-                    <th className="p-2 text-center text-slate-400">VIS</th>
+                    <th className="p-4 tracking-widest">VENDEDOR [EQUIPE]</th>
+                    <th className="p-2 text-center text-slate-500">ANN</th>
+                    <th className="p-2 text-center text-slate-500">LIG</th>
+                    <th className="p-2 text-center text-slate-500">AGD</th>
+                    <th className="p-2 text-center text-slate-500">VIS</th>
                     <th className="p-2 text-center text-white">FCH</th>
                     <th className="p-4 text-right text-[#10b981]">VGV INDIVIDUAL</th>
-                    <th className="p-2 text-center text-blue-300">A/L</th>
+                    <th className="p-2 text-center text-blue-300 border-l border-white/5">A/L</th>
                     <th className="p-2 text-center text-blue-300">L/A</th>
                     <th className="p-2 text-center text-blue-300">A/V</th>
                     <th className="p-2 text-center text-[#10b981] font-black">V/F</th>
@@ -206,18 +205,18 @@ const App: React.FC = () => {
                   {data.consultants.sort((a,b) => b.vgv - a.vgv).map((c, i) => (
                     <tr key={i} className="hover:bg-slate-50 transition-colors">
                       <td className="p-4 text-[#020617] font-black">
-                        {c.name} <span className="text-[7px] text-slate-400 ml-1 font-normal uppercase">[{c.team}]</span>
+                        {c.name} <span className="text-[7px] text-slate-400 ml-1 font-normal uppercase italic">[{c.team}]</span>
                       </td>
                       <td className="p-2 text-center text-slate-300">{c.ads}</td>
                       <td className="p-2 text-center text-slate-300">{c.calls}</td>
                       <td className="p-2 text-center text-slate-300">{c.appointments}</td>
                       <td className="p-2 text-center text-slate-300">{c.visits}</td>
-                      <td className="p-2 text-center text-slate-900 font-black">{c.closings}</td>
+                      <td className="p-2 text-center text-slate-900 font-black text-xs">{c.closings}</td>
                       <td className="p-4 text-right text-[#10b981] font-black bg-[#10b981]/5">R$ {formatCurrency(c.vgv)}</td>
-                      <td className="p-2 text-center text-blue-500">{c.adsToCall.toFixed(1)}</td>
+                      <td className="p-2 text-center text-blue-500 border-l border-slate-100">{c.adsToCall.toFixed(1)}</td>
                       <td className="p-2 text-center text-blue-500">{c.callToAppointment.toFixed(1)}</td>
                       <td className="p-2 text-center text-blue-500">{c.appointmentToVisit.toFixed(1)}</td>
-                      <td className="p-2 text-center text-[#10b981] font-black">{c.visitToClosing.toFixed(1)}</td>
+                      <td className="p-2 text-center text-[#10b981] font-black bg-emerald-50/20">{c.visitToClosing.toFixed(1)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -225,17 +224,17 @@ const App: React.FC = () => {
             </div>
           </section>
 
-          {/* Diagnosis IA no Report */}
+          {/* Parecer IA */}
           {diagnosis && (
-            <div className="bg-[#020617] rounded-[1.5rem] p-10 text-white mb-12 page-break-inside-avoid border-l-[12px] border-blue-600 relative overflow-hidden">
-               <div className="absolute top-[-20px] right-[-20px] opacity-10 rotate-12">
-                 <Sparkles size={180} />
+            <div className="bg-[#020617] rounded-[1.5rem] p-10 text-white mb-12 page-break-inside-avoid border-l-[12px] border-blue-600 relative overflow-hidden shadow-2xl">
+               <div className="absolute top-[-30px] right-[-30px] opacity-10 rotate-12">
+                 <Sparkles size={200} />
                </div>
                <div className="flex items-center gap-3 mb-6">
                  <Sparkles className="text-blue-400" size={24} />
                  <h4 className="text-[12px] font-black uppercase tracking-[0.5em] italic">PARECER TÉCNICO ESTRATÉGICO (AI)</h4>
                </div>
-               <div className="text-[12px] leading-relaxed font-semibold italic opacity-95 space-y-4 max-w-6xl">
+               <div className="text-[12px] leading-relaxed font-semibold italic opacity-95 space-y-4 max-w-6xl relative z-10">
                  {diagnosis.split('\n\n').map((para, i) => (
                    <p key={i}>{para}</p>
                  ))}
@@ -246,7 +245,7 @@ const App: React.FC = () => {
 
         <footer className="mt-12 pt-8 text-center border-t border-slate-100 opacity-50">
           <p className="text-[8px] font-black text-slate-400 uppercase tracking-[1em] italic leading-none">
-            SISTEMA GENESIS CORE • {data.reportDate} • DOCUMENTO CONFIDENCIAL
+            GENESIS INTELLIGENCE CORE • SCALING PROTOCOL • {data.reportDate}
           </p>
         </footer>
       </div>
@@ -268,7 +267,7 @@ const App: React.FC = () => {
               </div>
             </div>
             <div className="flex gap-4">
-              <button onClick={handleDemo} className="hidden md:flex items-center gap-2 px-5 py-2.5 bg-white/5 hover:bg-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest border border-white/10 transition-all">
+              <button onClick={handleDemo} className="hidden md:flex items-center gap-2 px-5 py-2.5 bg-white/5 hover:bg-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest border border-white/10 transition-all active:scale-95">
                 <Lightbulb size={16} className="text-yellow-400" /> CARREGAR DEMO
               </button>
               <button onClick={handleReset} className="p-3 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 transition-all group">
@@ -283,12 +282,12 @@ const App: React.FC = () => {
                 <div className="glass-card p-10 border-t-4 border-blue-600">
                   <div className="flex items-center gap-3 mb-8">
                     <FileText className="text-blue-600" size={24} />
-                    <h2 className="font-black text-sm uppercase tracking-[0.2em] text-slate-800 italic">Dados Brutos do Funil</h2>
+                    <h2 className="font-black text-sm uppercase tracking-[0.2em] text-slate-800 italic">DADOS BRUTOS DO FUNIL</h2>
                   </div>
                   <textarea 
                     value={rawText} onChange={(e) => setRawText(e.target.value)} 
-                    placeholder="Cole aqui o relatório copiado do grupo..." 
-                    className="w-full h-60 bg-slate-50/50 border-2 border-slate-100 rounded-[2rem] p-8 text-sm focus:ring-4 focus:ring-blue-600/5 focus:border-blue-600/30 outline-none font-bold italic transition-all resize-none"
+                    placeholder="Cole aqui os dados das equipes..." 
+                    className="w-full h-60 bg-slate-50/50 border-2 border-slate-100 rounded-[2rem] p-8 text-sm focus:ring-4 focus:ring-blue-600/5 focus:border-blue-600/30 outline-none font-bold italic transition-all resize-none shadow-inner"
                   />
                 </div>
               </div>
@@ -297,12 +296,12 @@ const App: React.FC = () => {
                 <div className="glass-card p-10 border-t-4 border-[#10b981] h-full">
                   <div className="flex items-center gap-3 mb-8">
                     <DollarSign className="text-[#10b981]" size={24} />
-                    <h2 className="font-black text-sm uppercase tracking-[0.2em] text-slate-800 italic">Faturamento (VGV)</h2>
+                    <h2 className="font-black text-sm uppercase tracking-[0.2em] text-slate-800 italic">FATURAMENTO (VGV)</h2>
                   </div>
                   <textarea 
                     value={vgvText} onChange={(e) => setVgvText(e.target.value)} 
                     placeholder="NOME: VALOR..." 
-                    className="w-full h-60 bg-slate-50/50 border-2 border-slate-100 rounded-[2rem] p-8 text-sm focus:ring-4 focus:ring-[#10b981]/5 focus:border-[#10b981]/30 outline-none font-bold italic transition-all resize-none"
+                    className="w-full h-60 bg-slate-50/50 border-2 border-slate-100 rounded-[2rem] p-8 text-sm focus:ring-4 focus:ring-[#10b981]/5 focus:border-[#10b981]/30 outline-none font-bold italic transition-all resize-none shadow-inner"
                   />
                 </div>
               </div>
@@ -316,7 +315,6 @@ const App: React.FC = () => {
 
             {data && (
               <div className="space-y-16 animate-in fade-in slide-in-from-bottom-6 duration-700 pb-32">
-                {/* Dashboard Header */}
                 <div className="flex flex-col md:flex-row justify-between items-center gap-8 bg-white p-10 rounded-[3rem] shadow-xl border border-slate-100">
                   <div className="text-center md:text-left">
                     <h2 className="text-5xl font-black text-[#020617] tracking-tighter italic uppercase leading-none">ANÁLISE DE PERFORMANCE</h2>
@@ -325,7 +323,7 @@ const App: React.FC = () => {
                   <div className="flex gap-5">
                     <button onClick={handleAiDiagnosis} disabled={loadingAi} className="bg-indigo-50 text-indigo-700 px-8 py-5 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-100 transition-all flex items-center gap-3 border-2 border-indigo-100 active:scale-95">
                       {loadingAi ? <RefreshCw className="animate-spin" size={18} /> : <Sparkles size={18} />} 
-                      GERAR DIAGNÓSTICO IA
+                      DIAGNÓSTICO IA
                     </button>
                     <button onClick={() => setView('report')} className="bg-blue-600 hover:bg-blue-700 text-white px-10 py-5 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-2xl shadow-blue-200 transition-all flex items-center gap-3 active:scale-95">
                       <Printer size={20} /> RELATÓRIO EXECUTIVO
@@ -333,7 +331,6 @@ const App: React.FC = () => {
                   </div>
                 </div>
 
-                {/* KPI Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                   <div className="bg-[#020617] text-white p-10 rounded-[3rem] flex flex-col justify-center relative overflow-hidden shadow-2xl border-[4px] border-[#2563eb]">
                     <div className="absolute right-[-40px] top-[-40px] opacity-10">
@@ -344,11 +341,10 @@ const App: React.FC = () => {
                       R$ {formatCurrency(data.totals.vgv)}
                     </h3>
                   </div>
-                  <StatCard label="TICKET MÉDIO OPERACIONAL" value={`R$ ${formatCurrency(data.ticketMedio)}`} icon={DollarSign} colorClass="border-[#10b981]" subtitle="EFICIÊNCIA POR FECHAMENTO" />
-                  <StatCard label="CONVERSÃO MÉDIA V/F" value={data.efficiency.visitToClosing.toFixed(1)} icon={Activity} colorClass="border-[#2563eb]" subtitle="TAXA DE SUCESSO EM VISITA" />
+                  <StatCard label="TICKET MÉDIO OPERACIONAL" value={`R$ ${formatCurrency(data.ticketMedio)}`} icon={DollarSign} colorClass="border-[#10b981]" subtitle="ROI DO FUNIL" />
+                  <StatCard label="EFICIÊNCIA MÉDIA V/F" value={data.efficiency.visitToClosing.toFixed(1)} icon={Activity} colorClass="border-[#2563eb]" subtitle="TAXA DE SUCESSO EM VISITA" />
                 </div>
 
-                {/* Main Table Dashboard */}
                 <div className="glass-card overflow-hidden border-2 border-slate-50 shadow-2xl">
                   <div className="bg-slate-50/50 p-8 border-b border-slate-100 flex items-center gap-3">
                     <PieChart size={24} className="text-blue-600" />
@@ -376,7 +372,7 @@ const App: React.FC = () => {
                             <td className="px-6 text-center text-slate-400">{t.totals.appointments}</td>
                             <td className="px-6 text-center text-slate-400">{t.totals.visits}</td>
                             <td className="px-6 text-center text-[#020617] text-lg">{t.totals.closings}</td>
-                            <td className="px-10 text-right text-[#10b981] text-sm font-black italic">R$ {formatCurrency(t.totals.vgv)}</td>
+                            <td className="px-10 text-right text-[#10b981] text-sm font-black italic whitespace-nowrap">R$ {formatCurrency(t.totals.vgv)}</td>
                           </tr>
                         ))}
                       </tbody>
@@ -384,7 +380,6 @@ const App: React.FC = () => {
                   </div>
                 </div>
 
-                {/* AI diagnosis Dashboard */}
                 {diagnosis && (
                   <div className="bg-[#020617] rounded-[3rem] p-12 text-white shadow-2xl relative overflow-hidden border-[6px] border-[#2563eb]">
                     <div className="absolute right-[-40px] bottom-[-40px] opacity-10">
