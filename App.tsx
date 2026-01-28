@@ -1,11 +1,11 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { 
-  FileText, TrendingUp, Users, DollarSign, Printer, Cpu, RefreshCw,
-  Wallet, PieChart, Activity, Target, Zap, ArrowLeft, Lightbulb,
-  CheckCircle2, AlertCircle, Sparkles, Trophy, BarChart3, Layers
+  FileText, TrendingUp, Users, DollarSign, Printer, Activity, Target, 
+  RefreshCw, Lightbulb, CheckCircle2, Sparkles, Trophy, BarChart3, 
+  Layers, ArrowLeft, Wallet, PieChart
 } from 'lucide-react';
-import { DashboardData, ConsultantStats } from './types';
+import { DashboardData } from './types';
 import { parseRawData } from './utils/parser';
 import { getFunnelDiagnosis } from './services/geminiService';
 
@@ -80,155 +80,148 @@ const App: React.FC = () => {
     val.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
   const StatCard = ({ label, value, icon: Icon, colorClass, subtitle }: any) => (
-    <div className={`glass-card p-6 flex flex-col items-center text-center transition-all hover:scale-[1.02] border-b-4 ${colorClass}`}>
-      <div className={`p-3 rounded-2xl mb-4 bg-opacity-10 ${colorClass.replace('border-', 'bg-').replace('-600', '-500')}`}>
+    <div className={`glass-card p-6 flex flex-col items-center text-center transition-all hover:translate-y-[-4px] border-b-4 ${colorClass}`}>
+      <div className={`p-4 rounded-2xl mb-4 bg-opacity-10 ${colorClass.replace('border-', 'bg-').replace('-600', '-500')}`}>
         <Icon size={24} className={colorClass.replace('border-', 'text-')} />
       </div>
-      <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">{label}</p>
-      <p className="text-3xl font-black text-slate-900 tracking-tight">{value}</p>
+      <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 mb-1">{label}</p>
+      <p className="text-3xl font-black italic text-slate-900 tracking-tighter">{value}</p>
       {subtitle && <p className="text-[9px] font-bold text-slate-400 mt-2 uppercase tracking-tighter">{subtitle}</p>}
     </div>
   );
 
   const ReportView = ({ data }: { data: DashboardData }) => {
-    const triggerPrint = () => {
+    const handlePrint = () => {
       window.print();
     };
 
     return (
       <div className="bg-white min-h-screen p-10 printable-content max-w-[210mm] mx-auto shadow-none">
-        {/* Navbar de visualização (não imprime) */}
-        <div className="no-print fixed top-0 left-0 right-0 bg-brand-dark text-white p-4 flex justify-between items-center z-[100] shadow-2xl border-b border-white/10">
+        {/* Navbar para Controle */}
+        <div className="no-print fixed top-0 left-0 right-0 bg-[#020617] text-white p-4 flex justify-between items-center z-[100] shadow-2xl">
           <div className="flex items-center gap-3 ml-4">
             <Activity size={20} className="text-blue-500" />
-            <span className="font-bold text-xs tracking-[0.2em] uppercase italic">Relatório Consolidado de Performance</span>
+            <span className="font-black text-[10px] tracking-[0.3em] uppercase italic">RELATÓRIO CONSOLIDADO DE PERFORMANCE</span>
           </div>
           <div className="flex gap-4 mr-4">
             <button 
-              onClick={triggerPrint} 
-              className="bg-blue-600 hover:bg-blue-500 text-white px-8 py-2.5 rounded-lg font-black text-[10px] uppercase tracking-widest flex items-center gap-2 transition-all shadow-lg shadow-blue-600/20 active:scale-95"
+              onClick={handlePrint} 
+              className="bg-blue-600 hover:bg-blue-500 text-white px-8 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest flex items-center gap-2 transition-all shadow-xl shadow-blue-900/20 active:scale-95"
             >
               <Printer size={16} /> IMPRIMIR PDF
             </button>
             <button 
               onClick={() => setView('dashboard')} 
-              className="bg-white/10 hover:bg-white/20 text-white px-6 py-2.5 rounded-lg font-black text-[10px] uppercase tracking-widest flex items-center gap-2 transition-all border border-white/10 active:scale-95"
+              className="bg-white/5 hover:bg-white/10 text-white px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest flex items-center gap-2 transition-all border border-white/10 active:scale-95"
             >
               <ArrowLeft size={16} /> VOLTAR AO SISTEMA
             </button>
           </div>
         </div>
 
-        {/* Header PDF */}
-        <div className="mt-16 mb-10 text-center">
-          <h1 className="text-4xl font-black text-slate-900 uppercase tracking-tighter italic border-b-4 border-slate-900 pb-2 inline-block px-12">
+        {/* Header Visual Principal - Mais Compacto */}
+        <div className="mt-12 mb-8 text-center">
+          <h1 className="text-3xl font-black text-[#0f172a] uppercase tracking-tighter italic border-b-2 border-[#0f172a] pb-1 inline-block px-10 leading-tight">
             RELATÓRIO CONSOLIDADO DE PERFORMANCE
           </h1>
-          <div className="mt-4 flex flex-col items-center">
-            <div className="h-1 w-24 bg-slate-900 mb-2"></div>
-            <p className="text-slate-500 font-bold text-xl tracking-[0.4em]">{data.reportDate}</p>
+          <p className="text-slate-400 font-bold text-lg mt-3 tracking-[0.3em]">{data.reportDate.split('').join(' ')}</p>
+        </div>
+
+        {/* Card de Faturamento Global - Refinado e Menos "Gritante" */}
+        <div className="border-[2px] border-[#020617] rounded-[2rem] p-8 mb-12 flex flex-col items-center shadow-md max-w-2xl mx-auto bg-white">
+          <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-3 text-center opacity-80">FATURAMENTO CONSOLIDADO GLOBAL</p>
+          <h2 className="text-5xl font-black text-[#020617] italic mb-8 tracking-tighter leading-none">
+            R$ {formatCurrency(data.totals.vgv)}
+          </h2>
+          
+          <div className="w-full max-w-lg h-px bg-slate-100 mb-8"></div>
+          
+          <div className="grid grid-cols-2 gap-12 w-full max-w-xl">
+            <div className="text-center">
+              <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1.5 italic">TICKET MÉDIO OPERACIONAL</p>
+              <p className="text-2xl font-black text-[#10b981] italic tracking-tighter leading-none">R$ {formatCurrency(data.ticketMedio)}</p>
+            </div>
+            <div className="text-center">
+              <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1.5 italic">TICKET MÉDIO POR VENDEDOR</p>
+              <p className="text-2xl font-black text-[#2563eb] italic tracking-tighter leading-none">R$ {formatCurrency(data.ticketMedioPorConsultor)}</p>
+            </div>
           </div>
         </div>
 
-        {/* Global Results Card - Reduced Dimensions */}
-        <div className="border-[3px] border-slate-900 rounded-[2rem] p-6 mb-12 flex flex-col items-center shadow-sm max-w-2xl mx-auto bg-white">
-          <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.5em] mb-3 text-center">FATURAMENTO CONSOLIDADO GLOBAL</p>
-          <h2 className="text-4xl font-black text-slate-950 italic mb-6 tracking-tighter">R$ {formatCurrency(data.totals.vgv)}</h2>
-          
-          <div className="w-full max-w-lg h-px bg-slate-100 mb-6"></div>
-          
-          <div className="grid grid-cols-2 gap-8 w-full max-w-xl">
-            <div className="text-center">
-              <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1 italic leading-none">TICKET MÉDIO OPERACIONAL</p>
-              <p className="text-xl font-black text-emerald-600 italic">R$ {formatCurrency(data.ticketMedio)}</p>
-            </div>
-            <div className="text-center">
-              <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1 italic leading-none">TICKET MÉDIO POR VENDEDOR</p>
-              <p className="text-xl font-black text-blue-600 italic">R$ {formatCurrency(data.ticketMedioPorConsultor)}</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Métricas de Volume */}
+        {/* Seção: Métricas de Volume */}
         <div className="mb-12">
-          <div className="flex items-center gap-2 mb-6">
-            <div className="w-2 h-4 bg-slate-900"></div>
-            <h3 className="text-[11px] font-black uppercase tracking-[0.3em] italic">Métricas de Volume Operacional</h3>
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-2 h-5 bg-[#020617]"></div>
+            <h3 className="text-[11px] font-black uppercase tracking-[0.2em] italic text-[#020617]">Métricas de Volume Operacional</h3>
           </div>
           <div className="grid grid-cols-5 gap-3">
             {[
-              { l: 'ANÚNCIOS', v: data.totals.ads },
-              { l: 'LIGAÇÕES', v: data.totals.calls },
-              { l: 'AGENDAMENTOS', v: data.totals.appointments },
-              { l: 'VISITAS', v: data.totals.visits },
-              { l: 'FECHAMENTOS', v: data.totals.closings }
+              { label: 'ANÚNCIOS', value: data.totals.ads },
+              { label: 'LIGAÇÕES', value: data.totals.calls },
+              { label: 'AGENDAMENTOS', value: data.totals.appointments },
+              { label: 'VISITAS', value: data.totals.visits },
+              { label: 'FECHAMENTOS', value: data.totals.closings }
             ].map((m, i) => (
-              <div key={i} className="border border-slate-200 rounded-xl p-4 text-center shadow-sm bg-slate-50/30">
-                <p className="text-[7px] font-black text-slate-400 uppercase mb-1 tracking-widest leading-none">{m.l}</p>
-                <p className="text-xl font-black text-slate-900 italic leading-none">{m.v}</p>
+              <div key={i} className="border border-slate-200 rounded-[1.5rem] p-4 text-center shadow-sm bg-white/50">
+                <p className="text-[7px] font-black text-slate-400 uppercase mb-2 tracking-widest leading-none">{m.label}</p>
+                <p className="text-2xl font-black text-[#0f172a] italic leading-none tracking-tighter">{m.value}</p>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Eficiência de Conversão */}
+        {/* Seção: Eficiência de Funil */}
         <div className="mb-12">
-          <div className="flex items-center gap-2 mb-6">
-            <div className="w-2 h-4 bg-blue-600"></div>
-            <h3 className="text-[11px] font-black uppercase tracking-[0.3em] text-blue-600 italic">Eficiência de Conversão do Funil</h3>
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-2 h-5 bg-[#2563eb]"></div>
+            <h3 className="text-[11px] font-black uppercase tracking-[0.2em] italic text-[#2563eb]">Eficiência de Conversão do Funil</h3>
           </div>
-          <div className="grid grid-cols-4 gap-4">
+          <div className="grid grid-cols-4 gap-3">
             {[
-              { l: 'ANÚNCIOS/LEAD', v: data.efficiency.adsToCall },
-              { l: 'LIGAÇÃO/AGEND.', v: data.efficiency.callToAppointment },
-              { l: 'AGEND./VISITA', v: data.efficiency.appointmentToVisit },
-              { l: 'VISITA/FECH.', v: data.efficiency.visitToClosing }
+              { label: 'ANÚNCIOS/LEAD', value: data.efficiency.adsToCall },
+              { label: 'LIGAÇÃO/AGEND.', value: data.efficiency.callToAppointment },
+              { label: 'AGEND./VISITA', value: data.efficiency.appointmentToVisit },
+              { label: 'VISITA/FECH.', value: data.efficiency.visitToClosing }
             ].map((m, i) => (
-              <div key={i} className="bg-slate-50 border border-slate-100 rounded-2xl p-5 text-center">
-                <p className="text-[8px] font-black text-slate-400 uppercase mb-2 tracking-widest leading-none">{m.l}</p>
-                <p className="text-3xl font-black text-blue-600 italic leading-none">{m.v.toFixed(1)}</p>
+              <div key={i} className="bg-slate-50 border border-slate-100 rounded-[1.5rem] p-5 text-center">
+                <p className="text-[7px] font-black text-slate-400 uppercase mb-2 tracking-widest leading-none">{m.label}</p>
+                <p className="text-3xl font-black text-[#2563eb] italic leading-none tracking-tighter">{m.value.toFixed(1)}</p>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Tabela de Unidades */}
+        {/* Tabela: Performance por Unidade */}
         <div className="mb-12 page-break-inside-avoid">
-          <div className="flex items-center gap-2 mb-6">
-            <div className="w-2 h-4 bg-blue-600"></div>
-            <h3 className="text-[11px] font-black uppercase tracking-[0.3em] text-blue-600 italic">Performance e Eficiência por Unidade</h3>
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-2 h-5 bg-[#2563eb]"></div>
+            <h3 className="text-[11px] font-black uppercase tracking-[0.2em] italic text-[#2563eb]">Performance por Unidade</h3>
           </div>
-          <div className="overflow-hidden rounded-xl border border-slate-200">
+          <div className="overflow-hidden rounded-[1rem] border border-slate-200">
             <table className="w-full text-[10px] border-collapse">
               <thead>
-                <tr className="bg-slate-900 text-white text-left italic uppercase font-black">
-                  <th className="p-3">Equipe</th>
+                <tr className="bg-[#020617] text-white text-left italic uppercase font-black">
+                  <th className="p-3 tracking-widest">Equipe</th>
                   <th className="p-3 text-center">ANN</th>
                   <th className="p-3 text-center">LIG</th>
                   <th className="p-3 text-center">AGD</th>
                   <th className="p-3 text-center">VIS</th>
                   <th className="p-3 text-center">FCH</th>
                   <th className="p-3 text-right">VGV Total</th>
-                  <th className="p-3 text-center text-blue-300">A/L</th>
-                  <th className="p-3 text-center text-blue-300">L/A</th>
-                  <th className="p-3 text-center text-blue-300">A/V</th>
                   <th className="p-3 text-center text-blue-300">V/F</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 font-bold italic">
                 {data.teams.map((t, i) => (
                   <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-slate-50'}>
-                    <td className="p-3 text-slate-900 uppercase">{t.teamName}</td>
+                    <td className="p-3 text-[#020617] uppercase font-black">{t.teamName}</td>
                     <td className="p-3 text-center text-slate-400">{t.totals.ads}</td>
                     <td className="p-3 text-center text-slate-400">{t.totals.calls}</td>
                     <td className="p-3 text-center text-slate-400">{t.totals.appointments}</td>
                     <td className="p-3 text-center text-slate-400">{t.totals.visits}</td>
-                    <td className="p-3 text-center text-slate-900">{t.totals.closings}</td>
-                    <td className="p-3 text-right text-emerald-600">R$ {t.totals.vgv.toLocaleString('pt-BR')}</td>
-                    <td className="p-3 text-center text-blue-600">{t.efficiency.adsToCall.toFixed(1)}</td>
-                    <td className="p-3 text-center text-blue-600">{t.efficiency.callToAppointment.toFixed(1)}</td>
-                    <td className="p-3 text-center text-blue-600">{t.efficiency.appointmentToVisit.toFixed(1)}</td>
-                    <td className="p-3 text-center text-blue-600">{t.efficiency.visitToClosing.toFixed(1)}</td>
+                    <td className="p-3 text-center text-[#020617]">{t.totals.closings}</td>
+                    <td className="p-3 text-right text-[#10b981] font-black">R$ {formatCurrency(t.totals.vgv)}</td>
+                    <td className="p-3 text-center text-[#2563eb]">{t.efficiency.visitToClosing.toFixed(1)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -236,45 +229,35 @@ const App: React.FC = () => {
           </div>
         </div>
 
-        {/* Tabela Individual (Ranking) */}
+        {/* Tabela: Ranking Individual */}
         <div className="mb-12">
-          <div className="flex items-center gap-2 mb-6">
-            <div className="w-2 h-4 bg-emerald-500"></div>
-            <h3 className="text-[11px] font-black uppercase tracking-[0.3em] text-emerald-600 italic">Ranking Individual de Performance</h3>
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-2 h-5 bg-[#10b981]"></div>
+            <h3 className="text-[11px] font-black uppercase tracking-[0.2em] italic text-[#10b981]">Ranking Individual</h3>
           </div>
-          <div className="overflow-hidden rounded-xl border border-slate-200">
+          <div className="overflow-hidden rounded-[1rem] border border-slate-200 shadow-sm">
             <table className="w-full text-[9px] border-collapse">
               <thead>
                 <tr className="bg-slate-50 text-slate-400 text-left italic uppercase font-black border-b border-slate-200">
-                  <th className="p-3">Vendedor [Equipe]</th>
+                  <th className="p-3 tracking-widest">Vendedor [Time]</th>
                   <th className="p-3 text-center">ANN</th>
                   <th className="p-3 text-center">LIG</th>
-                  <th className="p-3 text-center">AGD</th>
-                  <th className="p-3 text-center">VIS</th>
                   <th className="p-3 text-center">FCH</th>
-                  <th className="p-3 text-right">VGV Total</th>
-                  <th className="p-3 text-center text-blue-600">A/L</th>
-                  <th className="p-3 text-center text-blue-600">L/A</th>
-                  <th className="p-3 text-center text-blue-600">A/V</th>
+                  <th className="p-3 text-right">VGV Individual</th>
                   <th className="p-3 text-center text-blue-600">V/F</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 font-bold italic">
                 {data.consultants.sort((a,b) => b.closings - a.closings || b.vgv - a.vgv).map((c, i) => (
-                  <tr key={i} className="hover:bg-slate-50 transition-colors">
-                    <td className="p-3 text-slate-900">
-                      {c.name} <span className="text-[7px] text-slate-400 ml-1">[{c.team}]</span>
+                  <tr key={i} className="hover:bg-slate-50/50 transition-colors">
+                    <td className="p-3 text-[#0f172a] font-black">
+                      {c.name} <span className="text-[7px] text-slate-300 ml-1 font-normal italic">[{c.team}]</span>
                     </td>
                     <td className="p-3 text-center text-slate-300">{c.ads}</td>
                     <td className="p-3 text-center text-slate-300">{c.calls}</td>
-                    <td className="p-3 text-center text-slate-300">{c.appointments}</td>
-                    <td className="p-3 text-center text-slate-300">{c.visits}</td>
-                    <td className="p-3 text-center text-slate-900">{c.closings}</td>
-                    <td className="p-3 text-right text-emerald-600 bg-emerald-50/20">R$ {c.vgv.toLocaleString('pt-BR')}</td>
-                    <td className="p-3 text-center text-blue-600">{c.adsToCall.toFixed(1)}</td>
-                    <td className="p-3 text-center text-blue-600">{c.callToAppointment.toFixed(1)}</td>
-                    <td className="p-3 text-center text-blue-600">{c.appointmentToVisit.toFixed(1)}</td>
-                    <td className="p-3 text-center text-blue-600">{c.visitToClosing.toFixed(1)}</td>
+                    <td className="p-3 text-center text-[#0f172a] font-black">{c.closings}</td>
+                    <td className="p-3 text-right text-[#10b981] font-black bg-[#10b981]/5">R$ {formatCurrency(c.vgv)}</td>
+                    <td className="p-3 text-center text-[#2563eb] font-black">{c.visitToClosing.toFixed(1)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -283,15 +266,15 @@ const App: React.FC = () => {
         </div>
 
         {diagnosis && (
-          <div className="bg-slate-900 rounded-[2rem] p-8 text-white mb-12 page-break-inside-avoid shadow-2xl relative overflow-hidden">
-            <div className="absolute top-[-20px] right-[-20px] opacity-10">
+          <div className="bg-[#020617] rounded-[1.5rem] p-8 text-white mb-12 page-break-inside-avoid relative overflow-hidden shadow-xl">
+            <div className="absolute top-[-20px] right-[-20px] opacity-5">
               <Sparkles size={120} />
             </div>
-            <div className="flex items-center gap-2 mb-4 text-blue-400">
+            <div className="flex items-center gap-3 mb-4 text-blue-400">
               <Sparkles size={18} />
-              <h4 className="text-[10px] font-black uppercase tracking-widest italic">Análise de Inteligência Estratégica</h4>
+              <h4 className="text-[10px] font-black uppercase tracking-widest italic leading-none">Inteligência Estratégica</h4>
             </div>
-            <div className="text-xs leading-relaxed font-semibold italic opacity-90 space-y-3">
+            <div className="text-[11px] leading-relaxed font-semibold italic opacity-90 space-y-3 max-w-4xl">
               {diagnosis.split('\n\n').map((para, i) => (
                 <p key={i}>{para}</p>
               ))}
@@ -299,9 +282,9 @@ const App: React.FC = () => {
           </div>
         )}
 
-        <footer className="mt-16 pt-8 text-center border-t border-slate-100">
-          <p className="text-[8px] font-black text-slate-300 uppercase tracking-[1.5em] italic">
-            GENESIS INTELLIGENT CORE PROTOCOL • OPERATIONAL SCALING PROTOCOL • {data.reportDate}
+        <footer className="mt-16 pt-8 text-center border-t border-slate-100 opacity-60">
+          <p className="text-[8px] font-black text-slate-400 uppercase tracking-[1em] italic">
+            GENESIS INTELLIGENT CORE PROTOCOL • {data.reportDate}
           </p>
         </footer>
       </div>
@@ -309,245 +292,169 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className={`min-h-screen ${view === 'report' ? 'bg-slate-100/50' : 'bg-slate-50'}`}>
+    <div className={`min-h-screen ${view === 'report' ? 'bg-[#f1f5f9]' : 'bg-[#f8fafc]'}`}>
       {view === 'report' && data ? (
         <ReportView data={data} />
       ) : (
         <>
-          <nav className="bg-slate-900 text-white px-8 py-4 flex justify-between items-center sticky top-0 z-50 shadow-2xl no-print">
-            <div className="flex items-center gap-3">
-              <div className="bg-blue-600 p-2 rounded-lg shadow-lg shadow-blue-600/20"><Activity size={20} /></div>
+          <nav className="bg-[#020617] text-white px-10 py-5 flex justify-between items-center sticky top-0 z-50 shadow-2xl no-print">
+            <div className="flex items-center gap-4">
+              <div className="bg-blue-600 p-2.5 rounded-xl shadow-lg shadow-blue-900/40"><Activity size={24} /></div>
               <div className="flex flex-col">
-                <span className="font-black text-xl tracking-tighter italic uppercase leading-none">Genesis Hub</span>
-                <span className="text-[8px] font-bold text-blue-400 tracking-[0.3em] uppercase mt-0.5">Specialist Sales Ops</span>
+                <span className="font-black text-2xl tracking-tighter italic uppercase leading-none">GENESIS HUB</span>
+                <span className="text-[9px] font-bold text-blue-400 tracking-[0.4em] uppercase mt-1">SPECIALIST SALES OPS</span>
               </div>
             </div>
             <div className="flex gap-4">
-               <button onClick={handleDemo} className="hidden md:flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-xs font-bold border border-white/10 transition-all">
-                <Lightbulb size={14} className="text-yellow-400" /> DEMO
+              <button onClick={handleDemo} className="hidden md:flex items-center gap-2 px-5 py-2.5 bg-white/5 hover:bg-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest border border-white/10 transition-all">
+                <Lightbulb size={16} className="text-yellow-400" /> CARREGAR DEMO
               </button>
-              <button onClick={handleReset} className="p-2.5 bg-white/5 hover:bg-white/15 rounded-lg border border-white/5 transition-all">
-                <RefreshCw size={16} />
+              <button onClick={handleReset} className="p-3 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 transition-all group">
+                <RefreshCw size={18} className="group-active:rotate-180 transition-transform duration-500" />
               </button>
             </div>
           </nav>
 
-          <main className="max-w-7xl mx-auto px-6 py-10 no-print">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16">
+          <main className="max-w-7xl mx-auto px-8 py-12 no-print">
+            {/* Input Section */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 mb-20">
               <div className="lg:col-span-8">
-                <div className="glass-card p-8 border-t-4 border-blue-600">
-                  <div className="flex items-center gap-3 mb-6">
-                    <FileText className="text-blue-600" size={20} />
-                    <h2 className="font-black text-sm uppercase tracking-widest text-slate-800 italic">Relatórios do Grupo (WhatsApp)</h2>
+                <div className="glass-card p-10 border-t-4 border-blue-600">
+                  <div className="flex items-center gap-3 mb-8">
+                    <FileText className="text-blue-600" size={24} />
+                    <h2 className="font-black text-sm uppercase tracking-[0.2em] text-slate-800 italic">Relatórios Brutos (Grupo de Vendas)</h2>
                   </div>
                   <textarea 
                     value={rawText} onChange={(e) => setRawText(e.target.value)} 
-                    placeholder="Cole os dados aqui..." 
-                    className="w-full h-48 bg-slate-50 border border-slate-200 rounded-xl p-6 text-sm focus:ring-2 focus:ring-blue-600/20 outline-none font-medium transition-all"
+                    placeholder="Cole aqui os dados das equipes..." 
+                    className="w-full h-60 bg-slate-50/50 border-2 border-slate-100 rounded-[2rem] p-8 text-sm focus:ring-4 focus:ring-blue-600/5 focus:border-blue-600/30 outline-none font-bold italic transition-all resize-none"
                   />
                 </div>
               </div>
 
               <div className="lg:col-span-4">
-                <div className="glass-card p-8 border-t-4 border-emerald-500 h-full">
-                  <div className="flex items-center gap-3 mb-6">
-                    <DollarSign className="text-emerald-500" size={20} />
-                    <h2 className="font-black text-sm uppercase tracking-widest text-slate-800 italic">Faturamento Individual (VGV)</h2>
+                <div className="glass-card p-10 border-t-4 border-[#10b981] h-full">
+                  <div className="flex items-center gap-3 mb-8">
+                    <DollarSign className="text-[#10b981]" size={24} />
+                    <h2 className="font-black text-sm uppercase tracking-[0.2em] text-slate-800 italic">Faturamento Bruto (VGV)</h2>
                   </div>
                   <textarea 
                     value={vgvText} onChange={(e) => setVgvText(e.target.value)} 
                     placeholder="NOME: VALOR..." 
-                    className="w-full h-48 bg-slate-50 border border-slate-200 rounded-xl p-6 text-sm focus:ring-2 focus:ring-emerald-500/20 outline-none font-medium transition-all"
+                    className="w-full h-60 bg-slate-50/50 border-2 border-slate-100 rounded-[2rem] p-8 text-sm focus:ring-4 focus:ring-[#10b981]/5 focus:border-[#10b981]/30 outline-none font-bold italic transition-all resize-none"
                   />
                 </div>
               </div>
 
               <div className="lg:col-span-12">
-                 <button onClick={handleProcess} className="w-full py-5 bg-slate-900 text-white rounded-xl font-black uppercase text-xs tracking-[0.4em] shadow-xl hover:bg-black transition-all flex items-center justify-center gap-3 active:scale-[0.98]">
-                  <TrendingUp size={20} /> COMPILAR RESULTADOS ESTRATÉGICOS
+                 <button onClick={handleProcess} className="w-full py-6 bg-[#020617] text-white rounded-[2rem] font-black uppercase text-xs tracking-[0.5em] shadow-2xl hover:bg-black transition-all flex items-center justify-center gap-4 active:scale-[0.98]">
+                  <TrendingUp size={24} /> COMPILAR DADOS ESTRATÉGICOS
                 </button>
               </div>
             </div>
 
             {data && (
-              <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
-                <div className="flex flex-col md:flex-row justify-between items-end gap-6 bg-white p-8 rounded-3xl shadow-sm border border-slate-200">
-                  <div>
-                    <h2 className="text-4xl font-black text-slate-950 tracking-tighter italic uppercase">Análise de Performance</h2>
-                    <p className="text-slate-500 text-[10px] font-bold mt-1 uppercase tracking-[0.3em]">Protocolo {data.reportDate} • V02</p>
+              <div className="space-y-16 animate-in fade-in slide-in-from-bottom-6 duration-700 pb-32">
+                {/* Header Performance */}
+                <div className="flex flex-col md:flex-row justify-between items-center gap-8 bg-white p-10 rounded-[3rem] shadow-xl border border-slate-100">
+                  <div className="text-center md:text-left">
+                    <h2 className="text-5xl font-black text-[#020617] tracking-tighter italic uppercase leading-none">ANÁLISE DE PERFORMANCE</h2>
+                    <p className="text-slate-400 text-[11px] font-black mt-3 uppercase tracking-[0.4em]">PROTOCOLO DE ESCALONAMENTO • {data.reportDate}</p>
                   </div>
-                  <div className="flex gap-4">
-                    <button onClick={handleAiDiagnosis} disabled={loadingAi} className="bg-indigo-50 text-indigo-700 px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-100 transition-all flex items-center gap-2 border border-indigo-200">
-                      {loadingAi ? <RefreshCw className="animate-spin" size={14} /> : <Sparkles size={16} />} 
+                  <div className="flex gap-5">
+                    <button onClick={handleAiDiagnosis} disabled={loadingAi} className="bg-indigo-50 text-indigo-700 px-8 py-5 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-100 transition-all flex items-center gap-3 border-2 border-indigo-100 active:scale-95">
+                      {loadingAi ? <RefreshCw className="animate-spin" size={18} /> : <Sparkles size={18} />} 
                       DIAGNÓSTICO IA
                     </button>
-                    <button onClick={() => setView('report')} className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-blue-200 transition-all flex items-center gap-2">
-                      <Printer size={18} /> RELATÓRIO COMPLETO
+                    <button onClick={() => setView('report')} className="bg-blue-600 hover:bg-blue-700 text-white px-10 py-5 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-2xl shadow-blue-200 transition-all flex items-center gap-3 active:scale-95">
+                      <Printer size={20} /> RELATÓRIO PDF
                     </button>
                   </div>
                 </div>
 
-                {/* VISÃO MACRO - VGV E MÉDIAS */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  <div className="bg-slate-900 text-white p-8 rounded-[2rem] md:col-span-1 flex flex-col justify-center relative overflow-hidden">
-                    <div className="absolute right-[-20px] top-[-20px] opacity-10">
-                      <Wallet size={150} />
+                {/* Grid de KPIs Financeiros */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  <div className="bg-[#020617] text-white p-10 rounded-[3rem] flex flex-col justify-center relative overflow-hidden shadow-2xl">
+                    <div className="absolute right-[-40px] top-[-40px] opacity-10">
+                      <Wallet size={180} />
                     </div>
-                    <p className="text-[10px] font-black text-blue-400 uppercase tracking-[0.4em] mb-2 italic">Volume Geral de Vendas</p>
-                    <h3 className="text-4xl font-black italic tracking-tighter">
+                    <p className="text-[11px] font-black text-blue-400 uppercase tracking-[0.4em] mb-4 italic">VOLUME GERAL DE VENDAS</p>
+                    <h3 className="text-5xl font-black italic tracking-tighter leading-none">
                       R$ {formatCurrency(data.totals.vgv)}
                     </h3>
                   </div>
-                  <StatCard label="Ticket Médio / Venda" value={`R$ ${formatCurrency(data.ticketMedio)}`} icon={DollarSign} colorClass="border-emerald-500" subtitle="ROI Operacional" />
-                  <StatCard label="Ticket Médio / Consultor" value={`R$ ${formatCurrency(data.ticketMedioPorConsultor)}`} icon={Users} colorClass="border-blue-500" subtitle="Produtividade Financeira" />
+                  <StatCard label="TICKET MÉDIO OPERACIONAL" value={`R$ ${formatCurrency(data.ticketMedio)}`} icon={DollarSign} colorClass="border-[#10b981]" subtitle="ROI DO FUNIL" />
+                  <StatCard label="TICKET POR CONSULTOR" value={`R$ ${formatCurrency(data.ticketMedioPorConsultor)}`} icon={Users} colorClass="border-[#2563eb]" subtitle="EFICIÊNCIA INDIVIDUAL" />
                 </div>
 
-                {/* MÉTRICAS DE VOLUME - DASHBOARD */}
+                {/* Métricas Operacionais - Dashboard */}
                 <div>
-                  <div className="flex items-center gap-3 mb-6">
-                    <BarChart3 className="text-slate-900" size={20} />
-                    <h3 className="font-black uppercase tracking-widest text-sm text-slate-800 italic">Métricas de Volume Operacional</h3>
+                  <div className="flex items-center gap-4 mb-8">
+                    <div className="w-2 h-6 bg-[#020617]"></div>
+                    <h3 className="font-black uppercase tracking-[0.3em] text-sm text-slate-800 italic">MÉTRICAS DE VOLUME OPERACIONAL</h3>
                   </div>
-                  <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                    <StatCard label="Anúncios" value={data.totals.ads} icon={FileText} colorClass="border-slate-200" />
-                    <StatCard label="Ligações" value={data.totals.calls} icon={Users} colorClass="border-slate-200" />
-                    <StatCard label="Agend." value={data.totals.appointments} icon={Target} colorClass="border-slate-200" />
-                    <StatCard label="Visitas" value={data.totals.visits} icon={Activity} colorClass="border-slate-200" />
-                    <StatCard label="Fech." value={data.totals.closings} icon={CheckCircle2} colorClass="border-emerald-600" />
-                  </div>
-                </div>
-
-                {/* EFICIÊNCIA DE FUNIL - DASHBOARD */}
-                <div>
-                  <div className="flex items-center gap-3 mb-6">
-                    <Layers className="text-blue-600" size={20} />
-                    <h3 className="font-black uppercase tracking-widest text-sm text-slate-800 italic">Eficiência de Conversão</h3>
-                  </div>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                    <div className="glass-card p-6 bg-blue-50/30 border-l-4 border-blue-600 transition-all hover:bg-blue-100/40">
-                      <p className="text-[9px] font-black text-blue-600 uppercase tracking-widest mb-1">Anúncios / Lead</p>
-                      <p className="text-4xl font-black text-slate-900 italic">{data.efficiency.adsToCall.toFixed(1)}</p>
-                      <div className="w-full bg-slate-200 h-1 mt-4 rounded-full overflow-hidden">
-                        <div className="bg-blue-600 h-full transition-all duration-1000" style={{ width: `${Math.min(data.efficiency.adsToCall * 10, 100)}%` }}></div>
-                      </div>
-                    </div>
-                    <div className="glass-card p-6 bg-blue-50/30 border-l-4 border-blue-600 transition-all hover:bg-blue-100/40">
-                      <p className="text-[9px] font-black text-blue-600 uppercase tracking-widest mb-1">Ligação / Agend.</p>
-                      <p className="text-4xl font-black text-slate-900 italic">{data.efficiency.callToAppointment.toFixed(1)}</p>
-                      <div className="w-full bg-slate-200 h-1 mt-4 rounded-full overflow-hidden">
-                        <div className="bg-blue-600 h-full transition-all duration-1000" style={{ width: `${Math.min(data.efficiency.callToAppointment * 10, 100)}%` }}></div>
-                      </div>
-                    </div>
-                    <div className="glass-card p-6 bg-blue-50/30 border-l-4 border-blue-600 transition-all hover:bg-blue-100/40">
-                      <p className="text-[9px] font-black text-blue-600 uppercase tracking-widest mb-1">Agend. / Visita</p>
-                      <p className="text-4xl font-black text-slate-900 italic">{data.efficiency.appointmentToVisit.toFixed(1)}</p>
-                      <div className="w-full bg-slate-200 h-1 mt-4 rounded-full overflow-hidden">
-                        <div className="bg-blue-600 h-full transition-all duration-1000" style={{ width: `${Math.min(data.efficiency.appointmentToVisit * 10, 100)}%` }}></div>
-                      </div>
-                    </div>
-                    <div className="glass-card p-6 bg-blue-50/30 border-l-4 border-blue-600 transition-all hover:bg-blue-100/40">
-                      <p className="text-[9px] font-black text-blue-600 uppercase tracking-widest mb-1">Visita / Fech.</p>
-                      <p className="text-4xl font-black text-slate-900 italic">{data.efficiency.visitToClosing.toFixed(1)}</p>
-                      <div className="w-full bg-slate-200 h-1 mt-4 rounded-full overflow-hidden">
-                        <div className="bg-blue-600 h-full transition-all duration-1000" style={{ width: `${Math.min(data.efficiency.visitToClosing * 10, 100)}%` }}></div>
-                      </div>
-                    </div>
+                  <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
+                    <StatCard label="ANÚNCIOS" value={data.totals.ads} icon={FileText} colorClass="border-slate-200" />
+                    <StatCard label="LIGAÇÕES" value={data.totals.calls} icon={Users} colorClass="border-slate-200" />
+                    <StatCard label="AGEND." value={data.totals.appointments} icon={Target} colorClass="border-slate-200" />
+                    <StatCard label="VISITAS" value={data.totals.visits} icon={Activity} colorClass="border-slate-200" />
+                    <StatCard label="FECH." value={data.totals.closings} icon={CheckCircle2} colorClass="border-[#10b981]" />
                   </div>
                 </div>
 
-                {/* DIAGNÓSTICO IA - DASHBOARD SECTION */}
+                {/* Dashboard: Performance das Equipes */}
+                <div className="glass-card overflow-hidden border-2 border-slate-50 shadow-2xl">
+                  <div className="bg-slate-50/50 p-8 border-b border-slate-100 flex items-center gap-3">
+                    <PieChart size={24} className="text-blue-600" />
+                    <h3 className="font-black uppercase tracking-[0.2em] text-sm text-slate-800 italic">PERFORMANCE POR UNIDADE ESTRATÉGICA</h3>
+                  </div>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left">
+                      <thead className="bg-[#020617] text-white/50 font-black uppercase text-[10px] tracking-widest">
+                        <tr>
+                          <th className="px-10 py-5">Equipe</th>
+                          <th className="px-6 py-5 text-center">ANN</th>
+                          <th className="px-6 py-5 text-center">LIG</th>
+                          <th className="px-6 py-5 text-center">AGD</th>
+                          <th className="px-6 py-5 text-center">VIS</th>
+                          <th className="px-6 py-5 text-center text-white">FCH</th>
+                          <th className="px-10 py-5 text-right text-blue-300">VGV ACUMULADO</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-50 font-black text-xs italic">
+                        {data.teams.map((t, i) => (
+                          <tr key={i} className="hover:bg-slate-50/50 transition-colors">
+                            <td className="px-10 py-7 text-[#020617] uppercase text-sm">{t.teamName}</td>
+                            <td className="px-6 text-center text-slate-400">{t.totals.ads}</td>
+                            <td className="px-6 text-center text-slate-400">{t.totals.calls}</td>
+                            <td className="px-6 text-center text-slate-400">{t.totals.appointments}</td>
+                            <td className="px-6 text-center text-slate-400">{t.totals.visits}</td>
+                            <td className="px-6 text-center text-[#020617] text-lg">{t.totals.closings}</td>
+                            <td className="px-10 text-right text-[#10b981] text-sm">R$ {formatCurrency(t.totals.vgv)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                {/* Inteligência IA - Dashboard View */}
                 {diagnosis && (
-                  <div className="bg-slate-900 rounded-[2.5rem] p-10 text-white shadow-2xl relative overflow-hidden">
-                    <div className="absolute right-[-30px] bottom-[-30px] opacity-10">
+                  <div className="bg-[#020617] rounded-[3rem] p-12 text-white shadow-2xl relative overflow-hidden">
+                    <div className="absolute right-[-40px] bottom-[-40px] opacity-10">
                       <Sparkles size={250} />
                     </div>
-                    <div className="flex items-center gap-3 mb-6">
-                      <Sparkles className="text-blue-400" size={24} />
-                      <h3 className="font-black uppercase tracking-[0.2em] text-sm italic">Estratégia Proativa (AI Insights)</h3>
+                    <div className="flex items-center gap-4 mb-8">
+                      <Sparkles className="text-blue-400" size={28} />
+                      <h3 className="font-black uppercase tracking-[0.3em] text-sm italic">DIAGNÓSTICO PREDITIVO (AI)</h3>
                     </div>
-                    <div className="relative z-10 space-y-4 text-slate-300 font-medium italic leading-relaxed text-sm">
+                    <div className="relative z-10 space-y-6 text-slate-300 font-bold italic leading-relaxed text-sm max-w-5xl">
                       {diagnosis.split('\n\n').map((para, i) => (
                         <p key={i}>{para}</p>
                       ))}
                     </div>
                   </div>
                 )}
-
-                {/* PERFORMANCE POR UNIDADE - DASHBOARD */}
-                <div className="glass-card overflow-hidden border border-slate-200 shadow-xl">
-                  <div className="bg-slate-50 p-6 border-b border-slate-200 flex items-center gap-3">
-                    <PieChart size={20} className="text-blue-600" />
-                    <h3 className="font-black uppercase tracking-widest text-sm text-slate-800 italic">Performance por Unidade</h3>
-                  </div>
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-left">
-                      <thead className="bg-slate-100 text-slate-500 font-black uppercase text-[9px]">
-                        <tr>
-                          <th className="px-8 py-4">Equipe</th>
-                          <th className="px-4 py-4 text-center">ANN</th>
-                          <th className="px-4 py-4 text-center">LIG</th>
-                          <th className="px-4 py-4 text-center">AGD</th>
-                          <th className="px-4 py-4 text-center">VIS</th>
-                          <th className="px-4 py-4 text-center text-slate-900">FCH</th>
-                          <th className="px-4 py-4 text-center text-blue-600">EFF</th>
-                          <th className="px-8 py-4 text-right">VGV Total</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-100 font-bold text-xs italic">
-                        {data.teams.map((t, i) => (
-                          <tr key={i} className="hover:bg-slate-50 transition-colors">
-                            <td className="px-8 py-5 text-slate-900 uppercase font-black">{t.teamName}</td>
-                            <td className="px-4 text-center text-slate-400">{t.totals.ads}</td>
-                            <td className="px-4 text-center text-slate-400">{t.totals.calls}</td>
-                            <td className="px-4 text-center text-slate-400">{t.totals.appointments}</td>
-                            <td className="px-4 text-center text-slate-400">{t.totals.visits}</td>
-                            <td className="px-4 text-center font-black text-slate-900">{t.totals.closings}</td>
-                            <td className="px-4 text-center text-blue-600">{t.efficiency.visitToClosing.toFixed(1)}</td>
-                            <td className="px-8 text-right font-black text-emerald-600">R$ {formatCurrency(t.totals.vgv)}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-
-                {/* RANKING INDIVIDUAL - DASHBOARD */}
-                <div className="glass-card overflow-hidden border border-slate-200 shadow-xl">
-                  <div className="bg-slate-50 p-6 border-b border-slate-200 flex items-center gap-3">
-                    <Trophy size={20} className="text-yellow-600" />
-                    <h3 className="font-black uppercase tracking-widest text-sm text-slate-800 italic">Ranking Individual Detalhado</h3>
-                  </div>
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-left">
-                      <thead className="bg-slate-900 text-slate-400 font-bold uppercase tracking-widest text-[9px]">
-                        <tr>
-                          <th className="px-8 py-4 sticky left-0 bg-slate-900">Consultor [Time]</th>
-                          <th className="px-4 py-4 text-center">ANN</th>
-                          <th className="px-4 py-4 text-center">LIG</th>
-                          <th className="px-4 py-4 text-center">AGD</th>
-                          <th className="px-4 py-4 text-center text-white">FCH</th>
-                          <th className="px-4 py-4 text-center text-blue-400">V/F</th>
-                          <th className="px-8 py-4 text-right bg-emerald-900 text-emerald-400 italic">VGV Individual</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-100 font-bold text-sm italic">
-                        {data.consultants.sort((a,b) => b.closings - a.closings || b.vgv - a.vgv).map((c, i) => (
-                          <tr key={i} className="hover:bg-slate-50 transition-colors">
-                            <td className="px-8 py-6 sticky left-0 bg-white z-10 font-black text-slate-900 border-r border-slate-100">
-                              {c.name} <span className="text-[8px] opacity-40">[{c.team}]</span>
-                            </td>
-                            <td className="px-4 text-center text-slate-400">{c.ads}</td>
-                            <td className="px-4 text-center text-slate-400">{c.calls}</td>
-                            <td className="px-4 text-center text-slate-400">{c.appointments}</td>
-                            <td className="px-4 text-center font-black text-slate-900 text-lg">{c.closings}</td>
-                            <td className="px-4 text-center text-blue-600">{c.visitToClosing.toFixed(1)}</td>
-                            <td className="px-8 text-right font-black text-emerald-600 bg-emerald-50/30">R$ {formatCurrency(c.vgv)}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
               </div>
             )}
           </main>
