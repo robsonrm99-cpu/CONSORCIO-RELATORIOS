@@ -1,13 +1,27 @@
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { 
   FileText, TrendingUp, Users, DollarSign, Printer, Activity, Target, 
   RefreshCw, Lightbulb, CheckCircle2, Sparkles, Trophy, BarChart3, 
-  Layers, ArrowLeft, Wallet, PieChart, Download, BarChart
+  Layers, ArrowLeft, Wallet, PieChart, Download, BarChart, Lock, ShieldCheck,
+  AlertTriangle, ExternalLink
 } from 'lucide-react';
 import { DashboardData, TeamStats, ConsultantStats } from './types';
 import { parseRawData } from './utils/parser';
 import { getFunnelDiagnosis } from './services/geminiService';
+
+const VALID_PASSWORDS = [
+  'DEMO-RBX-01',
+  'DEMO-RBX-02',
+  'DEMO-RBX-03',
+  'DEMO-RBX-04',
+  'DEMO-RBX-05'
+];
+
+const AUTH_KEY = 'genesis_hub_auth_session';
+const FIRST_ACCESS_KEY = 'genesis_hub_first_access';
+const TRIAL_DAYS = 10;
+const MS_PER_DAY = 24 * 60 * 60 * 1000;
 
 const EXAMPLE_DATA = {
   raw: `EQUIPE RK
@@ -38,6 +52,12 @@ ERICA LIMA: 1.450.000,00`
 };
 
 const App: React.FC = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isExpired, setIsExpired] = useState<boolean>(false);
+  const [daysRemaining, setDaysRemaining] = useState<number>(TRIAL_DAYS);
+  const [loginPassword, setLoginPassword] = useState<string>('');
+  const [loginError, setLoginError] = useState<string>('');
+  
   const [rawText, setRawText] = useState<string>('');
   const [vgvText, setVgvText] = useState<string>('');
   const [data, setData] = useState<DashboardData | null>(null);
@@ -47,6 +67,59 @@ const App: React.FC = () => {
   const [view, setView] = useState<'dashboard' | 'report'>('dashboard');
   
   const reportRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const session = localStorage.getItem(AUTH_KEY);
+    const firstAccess = localStorage.getItem(FIRST_ACCESS_KEY);
+
+    if (session === 'true' && firstAccess) {
+      const startTime = parseInt(firstAccess, 10);
+      const now = Date.now();
+      const diffMs = now - startTime;
+      const diffDays = Math.floor(diffMs / MS_PER_DAY);
+      
+      if (diffDays >= TRIAL_DAYS) {
+        setIsExpired(true);
+        setIsAuthenticated(false);
+      } else {
+        setIsAuthenticated(true);
+        setDaysRemaining(TRIAL_DAYS - diffDays);
+      }
+    }
+  }, []);
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    const inputPass = loginPassword.trim().toUpperCase();
+    
+    if (VALID_PASSWORDS.includes(inputPass)) {
+      let firstAccess = localStorage.getItem(FIRST_ACCESS_KEY);
+      
+      // Se for o primeiro login da história desse browser, define a data de início
+      if (!firstAccess) {
+        firstAccess = Date.now().toString();
+        localStorage.setItem(FIRST_ACCESS_KEY, firstAccess);
+      }
+
+      const startTime = parseInt(firstAccess, 10);
+      const now = Date.now();
+      const diffMs = now - startTime;
+      const diffDays = Math.floor(diffMs / MS_PER_DAY);
+
+      if (diffDays >= TRIAL_DAYS) {
+        setIsExpired(true);
+        setLoginError('Este código de demonstração expirou.');
+      } else {
+        setIsAuthenticated(true);
+        localStorage.setItem(AUTH_KEY, 'true');
+        setDaysRemaining(TRIAL_DAYS - diffDays);
+        setLoginError('');
+      }
+    } else {
+      setLoginError('Código de acesso inválido.');
+      setLoginPassword('');
+    }
+  };
 
   const formatCurrency = (val: number) => 
     val.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -96,6 +169,98 @@ const App: React.FC = () => {
     setView('dashboard');
     setLoadingAi(false);
   };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    localStorage.removeItem(AUTH_KEY);
+  };
+
+  // Tela de Expiração
+  if (isExpired) {
+    return (
+      <div className="min-h-screen bg-[#020617] flex items-center justify-center p-6">
+        <div className="max-w-md w-full text-center">
+          <div className="bg-red-500/10 border border-red-500/20 p-12 rounded-[3rem] backdrop-blur-xl animate-in fade-in zoom-in duration-700">
+            <div className="bg-red-500 w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-lg shadow-red-500/20">
+              <AlertTriangle size={40} className="text-white" />
+            </div>
+            <h2 className="text-white font-black text-3xl italic uppercase tracking-tighter mb-4">Acesso Expirado</h2>
+            <p className="text-slate-400 text-sm font-medium leading-relaxed mb-10 italic">
+              Seu período de demonstração de {TRIAL_DAYS} dias chegou ao fim. Para continuar utilizando o Genesis Hub e todas as suas funcionalidades de IA e Automação, entre em contato com nosso time comercial.
+            </p>
+            <a 
+              href="https://ai.google.dev/gemini-api/docs/billing" 
+              target="_blank" 
+              className="w-full py-5 bg-white text-[#020617] rounded-2xl font-black uppercase text-xs tracking-[0.3em] transition-all flex items-center justify-center gap-3 hover:bg-slate-200 active:scale-95"
+            >
+              ADQUIRIR LICENÇA <ExternalLink size={18} />
+            </a>
+          </div>
+          <button 
+            onClick={() => { localStorage.clear(); window.location.reload(); }} 
+            className="mt-8 text-white/20 hover:text-white/40 text-[9px] font-bold uppercase tracking-[0.5em] italic transition-colors"
+          >
+            Limpar Dados da Sessão
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-[#020617] flex items-center justify-center p-6">
+        <div className="max-w-md w-full animate-in fade-in zoom-in duration-500">
+          <div className="flex justify-center mb-10">
+            <div className="flex items-center gap-4">
+              <div className="bg-blue-600 p-3 rounded-2xl shadow-lg shadow-blue-900/40">
+                <Activity size={32} className="text-white" />
+              </div>
+              <div className="flex flex-col">
+                <span className="font-black text-3xl tracking-tighter italic uppercase leading-none text-white">GENESIS HUB</span>
+                <span className="text-[10px] font-bold text-blue-400 tracking-[0.4em] uppercase mt-1">SPECIALIST SALES OPS</span>
+              </div>
+            </div>
+          </div>
+          
+          <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-10 rounded-[2.5rem] shadow-2xl">
+            <div className="flex items-center gap-3 mb-6">
+              <Lock size={20} className="text-blue-500" />
+              <h2 className="text-white font-black uppercase text-xs tracking-widest italic">Acesso Restrito</h2>
+            </div>
+            
+            <form onSubmit={handleLogin} className="space-y-6">
+              <div>
+                <input 
+                  type="text" 
+                  value={loginPassword}
+                  onChange={(e) => setLoginPassword(e.target.value)}
+                  placeholder="Digite seu código de acesso..." 
+                  className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white placeholder-white/20 outline-none focus:border-blue-500 transition-all font-bold text-center tracking-widest"
+                />
+                {loginError && (
+                  <p className="text-red-400 text-[10px] font-black uppercase mt-3 italic text-center tracking-wider">{loginError}</p>
+                )}
+              </div>
+              
+              <button type="submit" className="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-black uppercase text-xs tracking-[0.3em] transition-all flex items-center justify-center gap-3 shadow-lg shadow-blue-600/20 active:scale-95">
+                DESBLOQUEAR ACESSO <ShieldCheck size={18} />
+              </button>
+            </form>
+          </div>
+          
+          <div className="mt-10 flex flex-col items-center gap-2">
+             <p className="text-white/20 text-[9px] font-bold uppercase tracking-[0.5em] italic">
+              Consortium Management Systems • v4.0.2
+            </p>
+            <p className="text-blue-400/30 text-[8px] font-black uppercase tracking-[0.2em] italic">
+              TRIAL PERIOD: {TRIAL_DAYS} DAYS
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // Shared Components
   const SectionHeader = ({ title, colorClass }: any) => (
@@ -220,7 +385,7 @@ const App: React.FC = () => {
 
   const DashboardContent = ({ data }: { data: DashboardData }) => (
     <div className="space-y-8">
-      {/* KPIs SUPERIORES - REDUZIDOS PARA OTIMIZAR ESPAÇO */}
+      {/* KPIs SUPERIORES */}
       <div className="border-[2px] border-blue-500 rounded-[1.5rem] p-6 bg-white relative overflow-hidden page-break-avoid shadow-sm">
         <div className="flex flex-col items-center">
           <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em] mb-2 italic text-center">FATURAMENTO CONSOLIDADO GLOBAL</p>
@@ -288,6 +453,10 @@ const App: React.FC = () => {
           </div>
         </div>
         <div className="flex gap-4">
+          <div className="flex items-center gap-3 mr-4 bg-white/5 px-4 py-2 rounded-xl border border-white/10">
+            <div className={`w-2 h-2 rounded-full animate-pulse ${daysRemaining > 3 ? 'bg-emerald-500' : 'bg-red-500'}`}></div>
+            <span className="text-[8px] font-black uppercase italic tracking-widest text-white/40">DEMO: {daysRemaining} DIAS RESTANTES</span>
+          </div>
           {data && view === 'dashboard' && (
             <button onClick={() => setView('report')} className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2">
               <Printer size={16} /> MODO RELATÓRIO
@@ -307,6 +476,9 @@ const App: React.FC = () => {
             <>
               <button onClick={handleDemo} className="hidden md:flex items-center gap-2 px-6 py-2.5 bg-white/5 hover:bg-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest border border-white/10 transition-all">
                 <Lightbulb size={16} className="text-yellow-400" /> DEMO
+              </button>
+              <button onClick={handleLogout} className="p-2.5 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 transition-all group relative">
+                <Lock size={18} className="text-white/40 group-hover:text-red-400 transition-colors" />
               </button>
               <button onClick={handleReset} className="p-2.5 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 transition-all"><RefreshCw size={18} /></button>
             </>
